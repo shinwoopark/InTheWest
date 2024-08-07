@@ -16,7 +16,7 @@ enum PlayerState
 public class PlayerControl : MonoBehaviour
 {
     PlayerState CurrentState = PlayerState.Idle;
-
+    public UIManager UIManager;
     private EnemySystem _enemySystem;
 
     public GameObject IdleCollider, RollingCollider;
@@ -50,7 +50,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (!GameInstance.instance.bPlaying) return;
 
-        if (GameInstance.instance.bPaused)
+        if (GameInstance.instance.bPause)
             _animator.speed = 0;
         else
             _animator.speed = 1;
@@ -65,7 +65,7 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!GameInstance.instance.bPlaying || GameInstance.instance.bPaused) return;
+        if (!GameInstance.instance.bPlaying || GameInstance.instance.bPause) return;
 
         UpdateRolling();
     }
@@ -94,6 +94,8 @@ public class PlayerControl : MonoBehaviour
                 GameInstance.instance.PlayerWeapon = "Rifle";
             else
                 GameInstance.instance.PlayerWeapon = "Pistol";
+
+            UIManager.ChangeWeapon();
         }
 
         if (CurrentState == PlayerState.Idle || CurrentState == PlayerState.Load)

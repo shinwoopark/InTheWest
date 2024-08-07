@@ -5,6 +5,8 @@ using UnityEngine.Animations;
 
 public class PlayerSystem : MonoBehaviour
 {
+    public UIManager UIManager;
+
     private Animator _animator;
 
     private float _knuckBackTiem;
@@ -50,5 +52,7 @@ public class PlayerSystem : MonoBehaviour
         _knuckBack = KnuckBack;
         _directoin = direction;
         _knuckBackTiem = 0.1f;
+
+        UIManager.ChangePlayerHp();
     }
 }

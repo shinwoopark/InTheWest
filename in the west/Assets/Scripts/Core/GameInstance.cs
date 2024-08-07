@@ -6,7 +6,9 @@ public class GameInstance : MonoBehaviour
     public static GameInstance instance;
 
     public bool bPlaying;
-    public bool bPaused;
+    public bool bPause;
+
+    public float PlayTime;
 
     public int PlayerHp;
 

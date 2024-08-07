@@ -9,6 +9,10 @@ public class EnemySystem : MonoBehaviour
     public int Hp;
     public int MaxHp;
 
+    [HideInInspector]
+    public int Player_dir;
+    private GameObject _player_gb;
+
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -19,11 +23,14 @@ public class EnemySystem : MonoBehaviour
         GameManager.manager.CurrentEnemyCount++;
 
         Hp = MaxHp;
+
+        _player_gb = GameObject.Find("Player");
     }
 
     private void Update()
     {
         UpdateHp();
+        UpdatePlayerPos();
     }
 
     private void UpdateHp()
@@ -33,6 +40,14 @@ public class EnemySystem : MonoBehaviour
 
         if (Hp > MaxHp)
             Hp = MaxHp;
+    }
+
+    private void UpdatePlayerPos()
+    {
+        if (transform.position.x < _player_gb.transform.position.x)
+            Player_dir = 1;
+        else
+            Player_dir = -1;
     }
 
     private void Dead()
