@@ -50,11 +50,6 @@ public class PlayerControl : MonoBehaviour
     {
         if (!GameInstance.instance.bPlaying) return;
 
-        if (GameInstance.instance.bPause)
-            _animator.speed = 0;
-        else
-            _animator.speed = 1;
-
         UpdateCollider();
         UpdateInput();
         UpdateFireRaycast();
@@ -65,7 +60,7 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!GameInstance.instance.bPlaying || GameInstance.instance.bPause) return;
+        if (!GameInstance.instance.bPlaying) return;
 
         UpdateRolling();
     }
@@ -222,7 +217,7 @@ public class PlayerControl : MonoBehaviour
             if (_fireCount > 0 && hit.collider != null)
             {
                 _enemySystem = hit.collider.gameObject.GetComponent<EnemySystem>();
-                _enemySystem.Hit(_weapon);
+                _enemySystem.Hit(_weapon, transform.position.x);
                 _fireCount--;
             }
         }
@@ -307,7 +302,7 @@ public class PlayerControl : MonoBehaviour
         {
             Debug.Log(enemies.Length);
             _enemySystem = enemies[i].GetComponent<EnemySystem>();
-            _enemySystem.Hit("Pistol");
+            _enemySystem.Hit("Pistol", transform.position.x);
         }
     }
 

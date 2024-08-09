@@ -7,7 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    public TextMeshProUGUI PlayTime, PistolBullets, RifleBullets, Item1, Item2, Item3, Item4;
+    public TextMeshProUGUI PlayTime, PistolBullets, RifleBullets, RifleBullet, Item1, Item2, Item3;
+    public GameObject Item4;
+    public RectTransform Item4_tr;
     public GameObject Pause;
     public GameObject[] HitHps;
     public RectTransform[] Weapons;
@@ -17,6 +19,7 @@ public class UIManager : MonoBehaviour
         UpdatePlayeTime();
         UpdateBulletCount();
         UpdateItemCount();
+        UpdateItem4();
     }
 
     private void UpdatePlayeTime()
@@ -32,10 +35,29 @@ public class UIManager : MonoBehaviour
 
     private void UpdateItemCount()
     {
-        Item1.text = GameInstance.instance.ItemInventroy[0].ToString();
-        Item2.text = GameInstance.instance.ItemInventroy[1].ToString();
-        Item3.text = GameInstance.instance.ItemInventroy[2].ToString();
-        Item4.text = GameInstance.instance.ItemInventroy[3].ToString();
+        RifleBullet.text = GameInstance.instance.ItemInventroy[0].ToString();
+        Item1.text = GameInstance.instance.ItemInventroy[1].ToString();
+        Item2.text = GameInstance.instance.ItemInventroy[2].ToString();
+        Item3.text = GameInstance.instance.ItemInventroy[3].ToString();
+    }
+
+    private void UpdateItem4()
+    {
+        if (GameInstance.instance.Item4)
+        {
+            float posX = 0;
+
+            for (int i = 1; i < GameInstance.instance.PlayerHp; i++)
+            {
+                posX += 90;
+            }
+
+            Item4_tr.anchoredPosition = new Vector3(-765 + posX, 450, 0);
+
+            Item4.SetActive(true);
+        }
+        else
+            Item4.SetActive(false);
     }
 
     public void Puase()
@@ -45,9 +67,9 @@ public class UIManager : MonoBehaviour
 
     public void ChangePlayerHp()
     {
-        for (int i = 3; i > GameInstance.instance.PlayerHp; i--)
+        for (int i = 5; i > GameInstance.instance.PlayerHp; i--)
         {
-            HitHps[i - 1].SetActive(true);
+                HitHps[i - 1].SetActive(true);
         }
 
         for (int i = 0; i < GameInstance.instance.PlayerHp; i++)

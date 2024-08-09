@@ -18,13 +18,10 @@ public class PlayerSystem : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    private void Update()
-    {
-        UpdateHp();
-    }
-
     private void FixedUpdate()
     {
+        if (!GameInstance.instance.bPlaying) return;
+
         UpdateKnuckBack();
     }
 
@@ -46,13 +43,33 @@ public class PlayerSystem : MonoBehaviour
         }
     }
 
-    public void Hit(int damage, float KnuckBack, int direction)
+    public void Hit(int damage, float KnuckBack, float direction)
     {
+        if (GameInstance.instance.PlayerHp <= 0)
+            return;
+
+        if (GameInstance.instance.Item4)
+        {
+            GameInstance.instance.Item4 = false;
+            return;
+        }
+
         GameInstance.instance.PlayerHp -= damage;
         _knuckBack = KnuckBack;
-        _directoin = direction;
+
+        if (direction - transform.position.x > 0)
+            _directoin = -1;
+        else
+            _directoin = 1;
+
         _knuckBackTiem = 0.1f;
 
         UIManager.ChangePlayerHp();
+
+        if (GameInstance.instance.PlayerHp <= 0)
+        {
+            GameManager.manager.GameOver();
+            _animator.SetBool("bTakeDown", true);
+        }
     }
 }

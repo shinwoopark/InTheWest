@@ -41,20 +41,18 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (GameInstance.instance.bPause)
+            {
+                Time.timeScale = 1;
                 GameInstance.instance.bPause = false;
+            }           
             else
+            {
+                Time.timeScale = 0;
                 GameInstance.instance.bPause = true;
+            }
 
             _uiManager.Puase();
         }
-    }
-
-    private void UpdateTime()
-    {
-        if (GameInstance.instance.bPause)
-            Time.timeScale = 0;
-        else
-            Time.timeScale = 1;
     }
 
     public void GameOver()
