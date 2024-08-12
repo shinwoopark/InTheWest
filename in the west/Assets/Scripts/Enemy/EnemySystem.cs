@@ -9,6 +9,7 @@ public class EnemySystem : MonoBehaviour
 
     public int Hp;
     public int MaxHp;
+    public float DeadTime;
 
     private float _knuckBackTiem;
     private float _knuckBack;
@@ -68,7 +69,7 @@ public class EnemySystem : MonoBehaviour
     {
         gameObject.layer = 6;
 
-        _spriteRenderer.color -= new Color(0, 0, 0, 1f) * Time.deltaTime;
+        _spriteRenderer.color -= new Color(0, 0, 0, DeadTime) * Time.deltaTime;
         _animator.SetBool("bDead", true);
 
         if (_spriteRenderer.color.a <= 0)

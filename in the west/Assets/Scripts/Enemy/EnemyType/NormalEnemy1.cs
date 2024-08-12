@@ -106,6 +106,8 @@ public class NormalEnemy1 : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(AttackBoxPos.position + new Vector3(_enemySystem.Player_dir - 0.5f, 0, 0), AttackBoxSize);
+
+        if(_enemySystem != null)
+            Gizmos.DrawWireCube(AttackBoxPos.position + new Vector3(_enemySystem.Player_dir - 0.5f, 0, 0), AttackBoxSize);
     }
 }
