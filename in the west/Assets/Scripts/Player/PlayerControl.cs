@@ -400,4 +400,21 @@ public class PlayerControl : MonoBehaviour
             _animator.SetBool("bLoadRifle", false);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "Border")
+        {
+            if(collision.gameObject.name == "Left")
+            {
+                _spriteRenderer.flipX = false;
+                _playerDirection = 1;
+            }
+            else if (collision.gameObject.name == "Right")
+            {
+                _spriteRenderer.flipX = true;
+                _playerDirection = -1;
+            }
+        }
+    }
 }

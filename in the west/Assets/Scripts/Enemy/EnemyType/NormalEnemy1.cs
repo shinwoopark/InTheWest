@@ -16,7 +16,6 @@ public class NormalEnemy1 : MonoBehaviour
 
     public float RayLenth;
     public LayerMask Player;
-    public Transform AttackBoxPos;
     public Vector2 AttackBoxSize;
 
     private bool _bAttack;
@@ -74,7 +73,7 @@ public class NormalEnemy1 : MonoBehaviour
 
         if (_attackTime >= 0.4 && !_bSwing)
         {
-            Collider2D attackBox = Physics2D.OverlapBox(AttackBoxPos.position + new Vector3(_enemySystem.Player_dir, 0, 0), AttackBoxSize, 0, Player);
+            Collider2D attackBox = Physics2D.OverlapBox(transform.position + new Vector3(_enemySystem.Player_dir / 1.5f, 0, 0), AttackBoxSize, 0, Player);
 
             if (attackBox != null)
             {
@@ -107,7 +106,7 @@ public class NormalEnemy1 : MonoBehaviour
     {
         Gizmos.color = Color.red;
 
-        if(_enemySystem != null)
-            Gizmos.DrawWireCube(AttackBoxPos.position + new Vector3(_enemySystem.Player_dir - 0.5f, 0, 0), AttackBoxSize);
+        if (_enemySystem != null)
+            Gizmos.DrawWireCube(transform.position + new Vector3(_enemySystem.Player_dir / 1.5f, 0, 0), AttackBoxSize);
     }
 }
