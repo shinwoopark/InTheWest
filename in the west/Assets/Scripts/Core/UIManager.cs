@@ -69,6 +69,7 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 5; i > GameInstance.instance.PlayerHp; i--)
         {
+            if (i > 0)
                 HitHps[i - 1].SetActive(true);
         }
 

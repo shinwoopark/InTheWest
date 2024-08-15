@@ -18,6 +18,11 @@ public class PlayerSystem : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
+    private void Update()
+    {
+        UpdateHp();
+    }
+
     private void FixedUpdate()
     {
         if (!GameInstance.instance.bPlaying) return;
@@ -29,6 +34,7 @@ public class PlayerSystem : MonoBehaviour
     {
         if (GameInstance.instance.PlayerHp <= 0)
         {
+            GameInstance.instance.PlayerHp = 0;
             GameManager.manager.GameOver();
             _animator.SetBool("bTakeDown", true);
         }         

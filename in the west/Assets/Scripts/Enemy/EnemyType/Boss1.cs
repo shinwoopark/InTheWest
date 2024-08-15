@@ -21,6 +21,8 @@ public class Boss1 : MonoBehaviour
     private PlayerSystem _playerSystem;
     private GameObject _player_gb;
 
+    public GameObject Projectile, Trap;
+
     public float MoveSpeed;
     public int Damage;
     public float KnunkBack;
@@ -65,9 +67,7 @@ public class Boss1 : MonoBehaviour
 
     private void UpdateAtkBox()
     {
-       
-
-        Collider2D attackBox = Physics2D.OverlapBox(AtkBosPos.position + new Vector3(_enemySystem.Player_dir, 0, 0), AckBoxSize, 0, Player);
+        Collider2D attackBox = Physics2D.OverlapBox(AtkBosPos.position, AckBoxSize, 0, Player);
 
         if (attackBox != null && _bAtk)
         {
@@ -80,15 +80,30 @@ public class Boss1 : MonoBehaviour
     {
         _atkCurTime += Time.deltaTime;
 
-        if (_atkCurTime >= _atkCoolTime)
+
+
+        if (_atkCurTime >= _atkCoolTime && CurrentState == State.Idle)
         {
+            if (_distance <= 3)
+            {
+
+            }
+            else if(_distance <= 6)
+            {
+
+            }
+            else
+            {
+
+            }
+
+
             CurrentState = State.Attack;
-            StartCoroutine(Pattern1());
-            _atkCurTime = 0;
+            StartCoroutine(ProjectileCast());
         }
     }
 
-    private IEnumerator Pattern1()
+    private IEnumerator Atk1()
     {
         _animator.SetBool("bAtk1", true);
         Damage = 1;
@@ -102,6 +117,73 @@ public class Boss1 : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         _animator.SetBool("bAtk1", false);       
         CurrentState = State.Idle;
+        _atkCurTime = 0;
+    }
+
+    private IEnumerator Atk2()
+    {
+        _animator.SetBool("bAtk2", true);
+        Damage = 1;
+        KnunkBack = 10;
+        AtkBosPos.transform.localPosition = new Vector3(_enemySystem.Player_dir, 0, 0);
+        AckBoxSize = new Vector2(2, 1);
+
+        yield return new WaitForSeconds(0.2f);
+
+        for(int i = 0; i < 2; i++)
+        {
+            _bAtk = true;
+            yield return new WaitForSeconds(0.1f);
+            _bAtk = false;
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        _animator.SetBool("bAtk2", false);
+        CurrentState = State.Idle;
+        _atkCurTime = 0;
+    }
+
+    private IEnumerator Atk3()
+    {
+        _animator.SetBool("bAtk3", true);
+        Damage = 1;
+        KnunkBack = 10;
+        AtkBosPos.transform.localPosition = new Vector3(_enemySystem.Player_dir, 0, 0);
+        AckBoxSize = new Vector2(2, 1);
+        yield return new WaitForSeconds(0.2f);
+
+        for (int i = 0; i < 2; i++)
+        {
+            _bAtk = true;
+            yield return new WaitForSeconds(0.1f);
+            _bAtk = false;
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        Damage = 2;
+        KnunkBack = 15;
+        _bAtk = true;
+        yield return new WaitForSeconds(0.1f);
+        _bAtk = false;
+        yield return new WaitForSeconds(0.6f);
+        _animator.SetBool("bAtk3", false);
+        CurrentState = State.Idle;
+        _atkCurTime = 0;
+    }
+
+    private IEnumerator ProjectileCast()
+    {
+        _animator.SetBool("bProjectileCast", true);
+
+        yield return new WaitForSeconds(0.3f);
+
+        Instantiate(Projectile, transform.position, Quaternion.identity);
+
+        yield return new WaitForSeconds(0.3f);
+
+        _animator.SetBool("bProjectileCast", false);
+        CurrentState = State.Idle;
+        _atkCurTime = 0;
     }
 
     private void OnDrawGizmos()

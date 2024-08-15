@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBullet : MonoBehaviour
+public class EnemyProjectile : MonoBehaviour
 {
     private PlayerSystem _playerSystem;
     private GameObject _player;
@@ -18,6 +18,11 @@ public class EnemyBullet : MonoBehaviour
     {
         _player = GameObject.Find("Player");
         _playerSystem = _player.GetComponent<PlayerSystem>();
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
