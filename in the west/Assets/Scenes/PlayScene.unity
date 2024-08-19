@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4262,13 +4262,13 @@ GameObject:
   - component: {fileID: 1391411141}
   - component: {fileID: 1391411139}
   - component: {fileID: 1391411138}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boss1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1391411136
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4330,7 +4330,7 @@ Transform:
   m_GameObject: {fileID: 1391411135}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6, y: -1.5, z: 0}
+  m_LocalPosition: {x: -2, y: -1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4423,7 +4423,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Projectile: {fileID: 2354958684565734038, guid: f42c087813f22b244ae3493a40a9f4e3, type: 3}
   Trap: {fileID: 0}
+  _jumpPos: {fileID: 1471639318}
   MoveSpeed: 0
+  JumpPower: 1
   Damage: 0
   KnunkBack: 0
   Player:
@@ -4467,6 +4469,7 @@ MonoBehaviour:
   Hp: 10
   MaxHp: 10
   DeadTime: 0
+  bKunckBack: 0
   Player_dir: 0
 --- !u!1 &1401772267
 GameObject:
@@ -4652,6 +4655,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1424602128}
   m_CullTransparentMesh: 1
+--- !u!1 &1471639317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1471639318}
+  m_Layer: 0
+  m_Name: JumpPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1471639318
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471639317}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.712285, y: 2.6576736, z: -0.024177812}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1513356371
 GameObject:
   m_ObjectHideFlags: 0
@@ -6129,3 +6163,4 @@ SceneRoots:
   - {fileID: 963187426}
   - {fileID: 1391411137}
   - {fileID: 1759315119}
+  - {fileID: 1471639318}

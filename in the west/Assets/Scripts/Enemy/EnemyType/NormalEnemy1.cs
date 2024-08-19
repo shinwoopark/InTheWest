@@ -3,6 +3,14 @@ using UnityEngine;
 
 public class NormalEnemy1 : MonoBehaviour
 {
+    enum State
+    {
+        Move,
+        Attack,
+    }
+
+    State CurrentState = State.Move;
+
     private EnemySystem _enemySystem;
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
@@ -17,6 +25,8 @@ public class NormalEnemy1 : MonoBehaviour
     public float RayLenth;
     public LayerMask Player;
     public Vector2 AttackBoxSize;
+
+    private int _dir;
 
     private bool _bAttack;
     private bool _bSwing;
@@ -54,12 +64,21 @@ public class NormalEnemy1 : MonoBehaviour
 
     private void UpdateMove()
     {
-        transform.position += new Vector3(_enemySystem.Player_dir, 0, 0) * MoveSpeed * Time.deltaTime;
+        if(CurrentState == State.Move)
+        {
+            transform.position += new Vector3(_enemySystem.Player_dir, 0, 0) * MoveSpeed * Time.deltaTime;
 
-        if(_enemySystem.Player_dir == 1)
-            _spriteRenderer.flipX = true;
-        else
-            _spriteRenderer.flipX = false;
+            if (_enemySystem.Player_dir == 1)
+            {
+                _dir = 1;
+                _spriteRenderer.flipX = true;
+            }              
+            else
+            {
+                _dir = -1;
+                _spriteRenderer.flipX = false;
+            }           
+        }     
     }
 
     private void UpdateAttack()
@@ -73,7 +92,7 @@ public class NormalEnemy1 : MonoBehaviour
 
         if (_attackTime >= 0.4 && !_bSwing)
         {
-            Collider2D attackBox = Physics2D.OverlapBox(transform.position + new Vector3(_enemySystem.Player_dir / 1.5f, 0, 0), AttackBoxSize, 0, Player);
+            Collider2D attackBox = Physics2D.OverlapBox(transform.position + new Vector3(_dir / 1.5f, 0, 0), AttackBoxSize, 0, Player);
 
             if (attackBox != null)
             {
@@ -91,8 +110,8 @@ public class NormalEnemy1 : MonoBehaviour
 
     private void UpdateRaycaset()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _enemySystem.Player_dir, RayLenth, Player);
-        Debug.DrawRay(transform.position, Vector3.right * _enemySystem.Player_dir * RayLenth, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _dir, RayLenth, Player);
+        Debug.DrawRay(transform.position, Vector3.right * _dir * RayLenth, Color.red);
 
         if (!_bAttack && hit.collider != null)
         {
@@ -107,6 +126,6 @@ public class NormalEnemy1 : MonoBehaviour
         Gizmos.color = Color.red;
 
         if (_enemySystem != null)
-            Gizmos.DrawWireCube(transform.position + new Vector3(_enemySystem.Player_dir / 1.5f, 0, 0), AttackBoxSize);
+            Gizmos.DrawWireCube(transform.position + new Vector3(_dir / 1.5f, 0, 0), AttackBoxSize);
     }
 }

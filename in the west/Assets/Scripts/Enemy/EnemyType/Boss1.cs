@@ -1,34 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-
-enum State
-{
-    Idle,
-    Move,
-    Attack,
-    Dead
-}
 
 public class Boss1 : MonoBehaviour
 {
+    enum State
+    {
+        Idle,
+        Move,
+        Attack,
+        ProjectileCast,
+        Dead
+    }
+
     State CurrentState = State.Idle;
 
     private EnemySystem _enemySystem;
+    private EnemyProjectile _enemyProjectile;
+
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
     private PlayerSystem _playerSystem;
     private GameObject _player_gb;
+    private Transform _player_tr;
 
     public GameObject Projectile, Trap;
 
+    public Transform _jumpPos;
+
     public float MoveSpeed;
+    public float JumpPower;
     public int Damage;
     public float KnunkBack;
 
+    private int _phase;
+
+    private int _dir;
     private float _distance;
 
+    private bool _bJump;
+
+    float timer = 0;
+    int movement = 0;
     private bool _bAtk;
     private float _atkTime;
     private float _atkCoolTime = 2;
@@ -45,19 +60,60 @@ public class Boss1 : MonoBehaviour
         _animator = GetComponent<Animator>();
 
         _player_gb = GameObject.Find("Player");
+        _player_tr = _player_gb.GetComponent<Transform>();
         _playerSystem = _player_gb.GetComponent<PlayerSystem>();
     }
 
-    void Start()
+    private void Start()
     {
-        
+        _phase = 1;
     }
 
-    void Update()
+    private void Update()
     {
+        Debug.Log(_dir);
+
+        UpdateMove();
+        UpdatePlayerPos();
         UpdateChoosePattern();
         UpdateDistance();
         UpdateAtkBox();
+        UpdateProjectileCast();
+    }
+
+    private void FixedUpdate()
+    {
+        UpdateBackJump();
+    }
+
+    private void UpdatePlayerPos()
+    {
+        _player_tr.position = _player_gb.transform.position;
+    }
+
+    private void UpdateMove()
+    {
+        if (CurrentState == State.Idle)
+        {
+            if (transform.position.x < _player_gb.transform.position.x)
+            {
+                _dir = 1;
+                _spriteRenderer.flipX = false;
+            }             
+            else
+            {
+                _dir = -1;
+                _spriteRenderer.flipX = true;
+            }            
+        }       
+    }
+
+    private void UpdateBackJump()
+    {
+        if (_bJump)
+        {
+            transform.position += new Vector3(-_enemySystem.Player_dir * JumpPower, 0, 0) * Time.deltaTime;
+        }      
     }
 
     private void UpdateDistance()
@@ -75,27 +131,63 @@ public class Boss1 : MonoBehaviour
             _bAtk = false;
         }
     }
-
     private void UpdateChoosePattern()
     {
         _atkCurTime += Time.deltaTime;
 
-
-
         if (_atkCurTime >= _atkCoolTime && CurrentState == State.Idle)
         {
-            if (_distance <= 3)
-            {
+            //int atkPattern = 0;
 
-            }
-            else if(_distance <= 6)
-            {
+            //if (_distance <= 3)
+            //{
+            //    if(_phase == 1)
+            //    {
+            //        atkPattern = Random.Range(0, 5);
 
-            }
-            else
-            {
+            //        if (atkPattern < 2)
+            //        {
+            //            StartCoroutine(Atk1());
+            //        }
+            //        else if (atkPattern < 4)
+            //        {
+            //            StartCoroutine(Atk2());
+            //        }
+            //        else
+            //        {
 
-            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        atkPattern = Random.Range(0, 7);
+
+            //        if (atkPattern < 2)
+            //        {
+            //            StartCoroutine(Atk1());
+            //        }
+            //        else if (atkPattern < 4)
+            //        {
+            //            StartCoroutine(Atk2());
+            //        }
+            //        else if (atkPattern < 6)
+            //        {
+            //            StartCoroutine(Atk3());
+            //        }
+            //        else
+            //        {
+
+            //        }
+            //    }
+            //}
+            //else if(_distance <= 6)
+            //{
+
+            //}
+            //else
+            //{
+
+            //}
 
 
             CurrentState = State.Attack;
@@ -108,7 +200,7 @@ public class Boss1 : MonoBehaviour
         _animator.SetBool("bAtk1", true);
         Damage = 1;
         KnunkBack = 10;
-        AtkBosPos.transform.localPosition = new Vector3(_enemySystem.Player_dir, 0, 0);
+        AtkBosPos.transform.localPosition = new Vector3(_dir, 0, 0);
         AckBoxSize = new Vector2(2, 1);
         yield return new WaitForSeconds(0.2f);
         _bAtk = true;
@@ -125,7 +217,7 @@ public class Boss1 : MonoBehaviour
         _animator.SetBool("bAtk2", true);
         Damage = 1;
         KnunkBack = 10;
-        AtkBosPos.transform.localPosition = new Vector3(_enemySystem.Player_dir, 0, 0);
+        AtkBosPos.transform.localPosition = new Vector3(_dir, 0, 0);
         AckBoxSize = new Vector2(2, 1);
 
         yield return new WaitForSeconds(0.2f);
@@ -148,7 +240,7 @@ public class Boss1 : MonoBehaviour
         _animator.SetBool("bAtk3", true);
         Damage = 1;
         KnunkBack = 10;
-        AtkBosPos.transform.localPosition = new Vector3(_enemySystem.Player_dir, 0, 0);
+        AtkBosPos.transform.localPosition = new Vector3(_dir, 0, 0);
         AckBoxSize = new Vector2(2, 1);
         yield return new WaitForSeconds(0.2f);
 
@@ -171,6 +263,26 @@ public class Boss1 : MonoBehaviour
         _atkCurTime = 0;
     }
 
+    private IEnumerator TrapCast()
+    {
+        _animator.SetBool("bTrapCast", true);
+        _bJump = true;
+
+        yield return new WaitForSeconds(0.3f);
+
+        Instantiate(Projectile, transform.position, Quaternion.identity);
+
+        _enemyProjectile = Projectile.GetComponent<EnemyProjectile>();
+        _enemyProjectile.Dir = _player_tr.position - transform.position;
+
+        yield return new WaitForSeconds(0.3f);
+
+        _animator.SetBool("bTrapCast", false);
+        _bJump = false;
+        CurrentState = State.Idle;
+        _atkCurTime = 0;
+    }
+
     private IEnumerator ProjectileCast()
     {
         _animator.SetBool("bProjectileCast", true);
@@ -178,12 +290,44 @@ public class Boss1 : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         Instantiate(Projectile, transform.position, Quaternion.identity);
+        _enemyProjectile = Projectile.GetComponent<EnemyProjectile>();
+        _enemyProjectile.Dir = new Vector3(_dir, 0, 0);
 
         yield return new WaitForSeconds(0.3f);
 
         _animator.SetBool("bProjectileCast", false);
         CurrentState = State.Idle;
         _atkCurTime = 0;
+    }
+
+    private void UpdateProjectileCast()
+    {
+        if(CurrentState == State.ProjectileCast)
+        {
+            timer += Time.deltaTime;
+
+            if (movement == 0)
+            {
+                _animator.SetBool("bProjectileCast", true);
+                movement++;
+            }
+            
+
+            if (timer >= 0.3f && movement == 1)
+            {
+                //FireProjectile();
+                movement++;
+            }
+
+            if (timer >= 0.6f && movement == 2)
+            {
+                _animator.SetBool("bProjectileCast", false);               
+                _atkCurTime = 0;
+                timer = 0;
+                movement = 0;
+                CurrentState = State.Idle;
+            }
+        }
     }
 
     private void OnDrawGizmos()

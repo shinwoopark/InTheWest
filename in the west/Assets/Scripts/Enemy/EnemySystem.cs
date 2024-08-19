@@ -10,6 +10,7 @@ public class EnemySystem : MonoBehaviour
     public int Hp;
     public int MaxHp;
     public float DeadTime;
+    public bool bKunckBack;
 
     private float _knuckBackTiem;
     private float _knuckBack;
@@ -58,7 +59,7 @@ public class EnemySystem : MonoBehaviour
 
     private void UpdateKnuckBack()
     {
-        if (Hp > 0 && _knuckBackTiem > 0)
+        if (bKunckBack && Hp > 0 && _knuckBackTiem > 0)
         {
             transform.position += Vector3.right * _knuckBack * _directoin * Time.deltaTime;
             _knuckBackTiem -= Time.deltaTime;

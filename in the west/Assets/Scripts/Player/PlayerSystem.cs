@@ -20,6 +20,7 @@ public class PlayerSystem : MonoBehaviour
 
     private void Update()
     {
+        UpdateBorder();
         UpdateHp();
     }
 
@@ -28,6 +29,16 @@ public class PlayerSystem : MonoBehaviour
         if (!GameInstance.instance.bPlaying) return;
 
         UpdateKnuckBack();
+    }
+
+    private void UpdateBorder()
+    {
+        Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
+
+        if (pos.x < 0.0325f) pos.x = 0.0325f;
+        if (pos.x > 0.9675f) pos.x = 0.9675f;
+
+        transform.position = Camera.main.ViewportToWorldPoint(pos);
     }
 
     private void UpdateHp()

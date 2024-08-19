@@ -52,6 +52,7 @@ MonoBehaviour:
   Hp: 5
   MaxHp: 5
   DeadTime: 0
+  bKunckBack: 1
   Player_dir: 0
 --- !u!114 &2047234953256810303
 MonoBehaviour:
