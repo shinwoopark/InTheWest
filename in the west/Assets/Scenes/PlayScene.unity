@@ -4422,10 +4422,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Projectile: {fileID: 2354958684565734038, guid: f42c087813f22b244ae3493a40a9f4e3, type: 3}
-  Trap: {fileID: 0}
   _jumpPos: {fileID: 1471639318}
-  MoveSpeed: 0
-  JumpPower: 1
+  JumpPower: 3
+  RollSpeed: 5
   Damage: 0
   KnunkBack: 0
   Player:
@@ -4466,8 +4465,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed987e34e81328c4a932655bce1498f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hp: 10
-  MaxHp: 10
+  Hp: 50
+  MaxHp: 50
   DeadTime: 0
   bKunckBack: 0
   Player_dir: 0
@@ -5497,7 +5496,7 @@ GameObject:
   - component: {fileID: 1872234578}
   - component: {fileID: 1872234584}
   - component: {fileID: 1872234583}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}

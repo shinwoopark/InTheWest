@@ -25,12 +25,6 @@ public class EnemyProjectile : MonoBehaviour
         _playerSystem = _player.GetComponent<PlayerSystem>();
     }
 
-    private void Start()
-    {
-        Dir.Normalize();
-        SetDir();
-    }
-
     private void FixedUpdate()
     {
         UpdateMove();

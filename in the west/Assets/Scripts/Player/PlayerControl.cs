@@ -29,7 +29,7 @@ public class PlayerControl : MonoBehaviour
     private float _rollingCooltime;
     private float _rollingTime;
 
-    private string _weapon;
+    private string _weapon = "Pistol";
     private int _fireCount;
     private bool _bAddFireCount;
     private float _fireTime;
@@ -216,6 +216,7 @@ public class PlayerControl : MonoBehaviour
 
             if (_fireCount > 0 && hit.collider != null)
             {
+                Debug.Log("!");
                 _enemySystem = hit.collider.gameObject.GetComponent<EnemySystem>();
                 _enemySystem.Hit(_weapon, transform.position.x);
                 _fireCount--;
