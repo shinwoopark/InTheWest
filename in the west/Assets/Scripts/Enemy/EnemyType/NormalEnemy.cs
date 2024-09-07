@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class NormalEnemy1 : MonoBehaviour
+public class NormalEnemy : MonoBehaviour
 {
     enum State
     {
@@ -50,8 +50,7 @@ public class NormalEnemy1 : MonoBehaviour
         {
             UpdateRaycaset();
             UpdateAttack();
-        }
-                    
+        }          
     }
 
     private void FixedUpdate()
