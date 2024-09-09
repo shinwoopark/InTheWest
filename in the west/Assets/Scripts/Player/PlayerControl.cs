@@ -216,7 +216,6 @@ public class PlayerControl : MonoBehaviour
 
             if (_fireCount > 0 && hit.collider != null)
             {
-                Debug.Log("!");
                 _enemySystem = hit.collider.gameObject.GetComponent<EnemySystem>();
                 _enemySystem.Hit(_weapon, transform.position.x);
                 _fireCount--;
@@ -301,7 +300,6 @@ public class PlayerControl : MonoBehaviour
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            Debug.Log(enemies.Length);
             _enemySystem = enemies[i].GetComponent<EnemySystem>();
             _enemySystem.Hit("Pistol", transform.position.x);
         }

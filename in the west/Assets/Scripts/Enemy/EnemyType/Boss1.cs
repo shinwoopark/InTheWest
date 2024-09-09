@@ -66,6 +66,9 @@ public class Boss1 : MonoBehaviour
 
     private void Update()
     {
+        if (!GameInstance.instance.bPlaying) return;
+        if (_enemySystem.Hp <= 0) return;
+
         UpdateDir();
         UpadteDown();
         UpdatePlayerPos();
@@ -76,6 +79,9 @@ public class Boss1 : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameInstance.instance.bPlaying) return;
+        if (_enemySystem.Hp <= 0) return;
+
         UpdateMove();
     }
 

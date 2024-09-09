@@ -8,7 +8,6 @@ public class EnemySystem : MonoBehaviour
     private Animator _animator;
 
     public int Hp;
-    public int MaxHp;
     public float DeadTime;
     public bool bKunckBack;
 
@@ -30,8 +29,6 @@ public class EnemySystem : MonoBehaviour
     private void Start()
     {
         GameManager.manager.CurrentEnemyCount++;
-
-        Hp = MaxHp;
 
         _player_gb = GameObject.Find("Player");
     }

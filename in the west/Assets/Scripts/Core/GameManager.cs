@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager manager;
 
-    private UIManager _uiManager;
+    public UIManager UIManager;
 
     public int CurrentEnemyCount;
 
@@ -23,8 +23,6 @@ public class GameManager : MonoBehaviour
             manager = this;
             DontDestroyOnLoad(gameObject);
         }
-
-        _uiManager = GetComponent<UIManager>();
     }
 
     private void Update()
@@ -51,7 +49,7 @@ public class GameManager : MonoBehaviour
                 GameInstance.instance.bPause = true;
             }
 
-            _uiManager.Puase();
+            UIManager.Puase();
         }
     }
 
