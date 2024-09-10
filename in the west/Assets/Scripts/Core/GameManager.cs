@@ -25,6 +25,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        SoundManager.soundManager.PlayBgm(SoundManager.Bgm.MainMenu);
+    }
+
     private void Update()
     {
         if (!GameInstance.instance.bPlaying) return;
@@ -56,5 +61,6 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         GameInstance.instance.bPlaying = false;
+        SoundManager.soundManager.StopBgm();
     }
 }

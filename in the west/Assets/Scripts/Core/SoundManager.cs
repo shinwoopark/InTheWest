@@ -2,14 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.TerrainTools;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager soundManager;
 
-    public AudioSource BGmSource;
-    public AudioClip[] BGmClips;
+    [Header("BGM")]
+    AudioSource _bGmSource;
+    public AudioClip[] BgmClips;
+    public float BgmVolume;
+
+    public enum Bgm {MainMenu}
+
+    [Header("SFX")]
+    AudioSource[] _sfxSource;
+    public AudioClip[] SfxClips;
+    public float SfxVolume;
+    public int Channels;
+    private int _channelIndex;
+
+    public enum Sfx { }
 
     private void Awake()
     {
@@ -21,31 +33,54 @@ public class SoundManager : MonoBehaviour
         else
             Destroy(gameObject);
 
-        BGmSource = GetComponent<AudioSource>();
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        Init();
     }
 
-    private void OnSceneLoaded(Scene scene0, LoadSceneMode scene1)
+    private void Init()
     {
-        for (int i = 0; i < BGmClips.Length; i++)
+        GameObject bgmObject = new GameObject("Bgm");
+        bgmObject.transform.parent = transform;
+        _bGmSource = bgmObject.AddComponent<AudioSource>();
+        _bGmSource.playOnAwake = false;
+        _bGmSource.loop = true;
+        _bGmSource.volume = BgmVolume;
+
+        GameObject sfxObject = new GameObject("Sfx");
+        sfxObject.transform.parent = transform;
+        _sfxSource = new AudioSource[Channels];
+
+        for (int i = 0; i < _sfxSource.Length; i++)
         {
-            if (scene0.name == BGmClips[i].name)
-            {
-                PlayBGM(BGmClips[i]);
-            }             
+            _sfxSource[i] = sfxObject.AddComponent<AudioSource>();
+            _sfxSource[i].playOnAwake = false;
+            _sfxSource[i].volume = SfxVolume;
         }
     }
 
-    private void Update()
+    public void PlayBgm(Bgm bgm)
     {
-        
+        _bGmSource.clip = BgmClips[(int)bgm];
+        _bGmSource.Play();
     }
 
-    public void PlayBGM(AudioClip clip)
+    public void StopBgm()
     {
-        BGmSource.clip = clip;
-        BGmSource.loop = true;
-        BGmSource.volume = 0.1f;
-        BGmSource.Play();
+        _bGmSource.Stop();
+    }
+
+    public void PlaySfx(Sfx sfx)
+    {
+        for (int i = 0; i < _sfxSource.Length; i++)
+        {
+            int loopIndex = (i + _channelIndex) % _sfxSource.Length;
+
+            if (_sfxSource[loopIndex].isPlaying)
+                continue;
+
+            _channelIndex = loopIndex;
+            _sfxSource[loopIndex].clip = SfxClips[(int)sfx];
+            _sfxSource[loopIndex].Play();
+            break;
+        }
     }
 }
