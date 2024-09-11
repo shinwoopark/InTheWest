@@ -10,6 +10,9 @@ public class GameInstance : MonoBehaviour
 
     public float PlayTime;
 
+    public int Stage;
+    public bool bShoping;
+
     public int PlayerHp;
 
     public string PlayerWeapon = "Pistol";

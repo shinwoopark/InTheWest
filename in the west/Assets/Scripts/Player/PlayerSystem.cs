@@ -5,7 +5,7 @@ using UnityEngine.Animations;
 
 public class PlayerSystem : MonoBehaviour
 {
-    public UIManager UIManager;
+    public MainUi MainUi;
 
     private Animator _animator;
 
@@ -81,7 +81,7 @@ public class PlayerSystem : MonoBehaviour
 
         _knuckBackTiem = 0.1f;
 
-        UIManager.ChangePlayerHp();
+        MainUi.ChangePlayerHp();
 
         if (GameInstance.instance.PlayerHp <= 0)
         {

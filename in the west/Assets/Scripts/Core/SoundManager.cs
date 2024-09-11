@@ -12,7 +12,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip[] BgmClips;
     public float BgmVolume;
 
-    public enum Bgm {MainMenu}
+    public enum Bgm {MainMenu, Play, Boss}
 
     [Header("SFX")]
     AudioSource[] _sfxSource;

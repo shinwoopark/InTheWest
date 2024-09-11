@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class UIManager : MonoBehaviour
+public class MainUi : MonoBehaviour
 {
     public TextMeshProUGUI PlayTime, PistolBullets, RifleBullets, RifleBullet, Item1, Item2, Item3;
     public GameObject Item4;
@@ -13,10 +13,13 @@ public class UIManager : MonoBehaviour
     public GameObject Pause;
     public GameObject[] HitHps;
     public RectTransform[] Weapons;
+    public GameObject Buttons;
+    public Image BackGround;
 
     private void Update()
     {
         UpdatePlayeTime();
+        UpdateGameOver();
         UpdateBulletCount();
         UpdateItemCount();
         UpdateItem4();
@@ -25,6 +28,19 @@ public class UIManager : MonoBehaviour
     private void UpdatePlayeTime()
     {
         PlayTime.text = GameInstance.instance.PlayTime.ToString("F0");
+    }
+
+    private void UpdateGameOver()
+    {
+        if (GameInstance.instance.bPlaying)
+            return;
+
+        BackGround.color += new Color(0, 0, 0, 0.3f) * Time.deltaTime;
+
+        if (BackGround.color.a >= 1)
+        {
+            Buttons.SetActive(true);
+        }
     }
 
     private void UpdateBulletCount()
@@ -101,5 +117,10 @@ public class UIManager : MonoBehaviour
     public void ExitMain()
     {
         SceneManager.LoadScene("MainScene");
+    }
+
+    public void Retry()
+    {
+        SceneManager.LoadScene("PlayScene");
     }
 }

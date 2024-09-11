@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager manager;
 
-    public UIManager UIManager;
+    public MainUi MainUi;
 
     public int CurrentEnemyCount;
 
@@ -25,6 +25,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void GameStart()
+    {
+        GameInstance.instance.Stage = 1;
+    }
+
     private void Start()
     {
         SoundManager.soundManager.PlayBgm(SoundManager.Bgm.MainMenu);
@@ -41,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (!GameInstance.instance.bShoping && Input.GetKeyDown(KeyCode.Escape))
         {
             if (GameInstance.instance.bPause)
             {
@@ -54,7 +59,7 @@ public class GameManager : MonoBehaviour
                 GameInstance.instance.bPause = true;
             }
 
-            UIManager.Puase();
+            MainUi.Puase();
         }
     }
 

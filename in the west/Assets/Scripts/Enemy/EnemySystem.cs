@@ -87,6 +87,27 @@ public class EnemySystem : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (Random.Range(0, 3) == 0)
+        {
+            int item = 0;
+
+            if (!GameInstance.instance.Item4)
+            {
+                item = Random.Range(0, 5);
+
+                if (item == 4)
+                    GameInstance.instance.Item4 = true;
+                else
+                    GameInstance.instance.ItemInventroy[item]++;
+            }
+            else
+            {
+                item = Random.Range(0, 4);
+
+                GameInstance.instance.ItemInventroy[item]++;
+            }
+        }
+
         GameManager.manager.CurrentEnemyCount--;
     }
 

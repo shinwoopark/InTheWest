@@ -10,7 +10,6 @@ public class Boss1 : MonoBehaviour
         Idle,
         Move,
         Attack,
-        Down,
         Dead
     }
 
@@ -42,7 +41,6 @@ public class Boss1 : MonoBehaviour
 
     private bool _bJump;
     private bool _bRoll;
-    private float _downTimer = 0;
 
     private bool _bAtk;
     private float _atkTime;
@@ -70,7 +68,6 @@ public class Boss1 : MonoBehaviour
         if (_enemySystem.Hp <= 0) return;
 
         UpdateDir();
-        UpadteDown();
         UpdatePlayerPos();
         UpdateChoosePattern();
         UpdateDistance();
@@ -105,33 +102,6 @@ public class Boss1 : MonoBehaviour
                 _spriteRenderer.flipX = true;
             }            
         }       
-    }
-
-    private void UpadteDown()
-    {
-        if (_down == 0 && _enemySystem.Hp <= 35)
-        {
-            CurrentState = State.Down;
-            _down++;
-        }
-        else if(_down == 1 && _enemySystem.Hp <= 20)
-        {
-            CurrentState = State.Down;
-            _down++;
-        }
-
-        if (CurrentState == State.Down)
-        {
-            _downTimer += Time.deltaTime;
-
-            _animator.SetBool("bDown", true);
-
-            if (_downTimer >= 2)
-            {
-                _animator.SetBool("bDown", false);
-                CurrentState = State.Idle;
-            }
-        }
     }
 
     private void UpdateMove()

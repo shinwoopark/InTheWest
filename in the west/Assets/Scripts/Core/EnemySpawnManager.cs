@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class EnemySpawnManager : MonoBehaviour
 {
+    public ShopUi ShopUi;
+
     public GameObject[] NormalEnemy;
     public GameObject[] BossEnemy;
 
@@ -27,7 +30,16 @@ public class EnemySpawnManager : MonoBehaviour
 
         if(_wave >= 5)
         {
-            SpawnBossEnemy(0, -1);
+            if(GameInstance.instance.Stage < 3)
+            {
+                GameInstance.instance.Stage++;
+                ShopUi.gameObject.SetActive(true);
+                Time.timeScale = 0;
+                GameInstance.instance.bShoping = true;
+                GameInstance.instance.bPause = true;
+            }
+            else
+                SpawnBossEnemy(0, -1);
         }
         else if (_wave < 5)
         {
@@ -102,11 +114,12 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void SpawnNormalEnemy(int enemy, int dir)
     {
-        Instantiate(NormalEnemy[enemy], new Vector3(9.5f * dir, -1.5f, 0), Quaternion.identity);
+        Instantiate(NormalEnemy[enemy], new Vector3(9.5f * dir, -3f, 0), Quaternion.identity);
     }
 
     private void SpawnBossEnemy(int enemy, int dir)
     {
-        Instantiate(BossEnemy[enemy], new Vector3(9.5f * dir, -1.5f, 0), Quaternion.identity);
+        Instantiate(BossEnemy[enemy], new Vector3(9.5f * dir, -3f, 0), Quaternion.identity);
+        //SoundManager.soundManager.PlayBgm(SoundManager.Bgm.Boss);
     }
 }
