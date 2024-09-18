@@ -36,6 +36,5 @@ public class GameInstance : MonoBehaviour
         }
         else
             Destroy(gameObject);
-
     }
 }
