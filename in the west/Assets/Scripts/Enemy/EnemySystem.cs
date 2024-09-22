@@ -28,6 +28,8 @@ public class EnemySystem : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log(Hp);
+
         GameManager.manager.CurrentEnemyCount++;
 
         _player_gb = GameObject.Find("Player");

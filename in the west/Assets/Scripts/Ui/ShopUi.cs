@@ -6,7 +6,7 @@ public class ShopUi : MonoBehaviour
 {
     public void AddItem1()
     {
-        GameInstance.instance.ItemInventroy[0]++;
+        GameInstance.instance.ItemInventroy[0] = GameInstance.instance.ItemInventroy[0] + 3;
         CloseShop();
     }
 
@@ -30,6 +30,8 @@ public class ShopUi : MonoBehaviour
 
     private void CloseShop()
     {
+        GameInstance.instance.bShoping = false;
+        Time.timeScale = 1;
         gameObject.SetActive(false);
     }
 }

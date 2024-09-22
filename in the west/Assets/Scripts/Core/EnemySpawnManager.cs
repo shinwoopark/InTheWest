@@ -1,12 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class EnemySpawnManager : MonoBehaviour
 {
-    public ShopUi ShopUi;
-
     public GameObject[] NormalEnemy;
     public GameObject[] BossEnemy;
 
@@ -25,21 +21,29 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void UpdateWave()
     {
+        Debug.Log(_wave);
+        Debug.Log(_time);
+
         if (_time < 7.5f)
             return;
 
         if(_wave >= 5)
         {
-            if(GameInstance.instance.Stage < 3)
+            GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if (enemys.Length == 0)
             {
-                GameInstance.instance.Stage++;
-                ShopUi.gameObject.SetActive(true);
-                Time.timeScale = 0;
-                GameInstance.instance.bShoping = true;
-                GameInstance.instance.bPause = true;
-            }
-            else
-                SpawnBossEnemy(0, -1);
+                if (GameInstance.instance.Stage < 3)
+                {
+                    GameInstance.instance.Stage++;
+                    UiManager.uiManager.ShopUi.gameObject.SetActive(true);
+                    Time.timeScale = 0;
+                    GameInstance.instance.bShoping = true;
+                    _wave = 1;
+                }
+                else
+                    SpawnBossEnemy(0, -1);
+            }     
         }
         else if (_wave < 5)
         {

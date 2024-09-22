@@ -16,7 +16,7 @@ enum PlayerState
 public class PlayerControl : MonoBehaviour
 {
     PlayerState CurrentState = PlayerState.Idle;
-    public MainUi MainUi;
+
     private EnemySystem _enemySystem;
 
     public GameObject IdleCollider, RollingCollider;
@@ -90,7 +90,7 @@ public class PlayerControl : MonoBehaviour
             else
                 GameInstance.instance.PlayerWeapon = "Pistol";
 
-            MainUi.ChangeWeapon();
+            UiManager.uiManager.MainUi.ChangeWeapon();
         }
 
         if (CurrentState == PlayerState.Idle || CurrentState == PlayerState.Load)
