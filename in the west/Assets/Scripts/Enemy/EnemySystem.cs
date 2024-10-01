@@ -28,8 +28,6 @@ public class EnemySystem : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(Hp);
-
         GameManager.manager.CurrentEnemyCount++;
 
         _player_gb = GameObject.Find("Player");
@@ -80,8 +78,9 @@ public class EnemySystem : MonoBehaviour
     {
         gameObject.layer = 6;
 
-        _spriteRenderer.color -= new Color(0, 0, 0, DeadTime) * Time.deltaTime;
         _animator.SetBool("bDead", true);
+
+        _spriteRenderer.color -= new Color(0, 0, 0, DeadTime) * Time.deltaTime;
 
         if (_spriteRenderer.color.a <= 0)
             Destroy(gameObject);
@@ -89,7 +88,16 @@ public class EnemySystem : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (Random.Range(0, 3) == 0)
+        if (gameObject.name == "Boss1(Clone)")
+        {
+            GameManager.manager.GameClear();
+            return;
+        }
+
+        if (!GameInstance.instance.bPlaying)
+            return;
+
+        if (Random.Range(0, 2) == 0)
         {
             int item = 0;
 
@@ -108,6 +116,8 @@ public class EnemySystem : MonoBehaviour
 
                 GameInstance.instance.ItemInventroy[item]++;
             }
+
+            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.GetItem);
         }
 
         GameManager.manager.CurrentEnemyCount--;

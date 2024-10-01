@@ -50,8 +50,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed987e34e81328c4a932655bce1498f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hp: 50
-  DeadTime: 5
+  Hp: 40
+  DeadTime: 0.75
   bKunckBack: 0
   Player_dir: 0
 --- !u!114 &8564772347200150792
@@ -67,7 +67,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Projectile: {fileID: 2354958684565734038, guid: f42c087813f22b244ae3493a40a9f4e3, type: 3}
-  _jumpPos: {fileID: 0}
   JumpPower: 3
   RollSpeed: 5
   Damage: 0

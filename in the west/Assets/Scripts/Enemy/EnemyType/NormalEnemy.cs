@@ -98,6 +98,7 @@ public class NormalEnemy : MonoBehaviour
                 _playerSystem.Hit(Damage, KnunkBack, transform.position.x);
             }
 
+            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swing);
             _bSwing = true;
         }
         if (_attackTime >= 0.8)

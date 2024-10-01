@@ -27,11 +27,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        //SoundManager.soundManager.PlayBgm(SoundManager.Bgm.MainMenu);
-    }
-
     private void Update()
     {
         UpdatePlayTime();
@@ -51,7 +46,7 @@ public class GameManager : MonoBehaviour
         {
             if (!GameInstance.instance.bPlaying)
             {
-                UiManager.uiManager.SetMenu();
+                UiManager.uiManager.ExitMenu();
             }
             else
             {
@@ -59,13 +54,11 @@ public class GameManager : MonoBehaviour
                 {
                     if (GameInstance.instance.bPause)
                     {
-                        Debug.Log("!");
                         Time.timeScale = 1;
                         GameInstance.instance.bPause = false;
                     }
                     else
                     {
-                        Debug.Log("?");
                         Time.timeScale = 0;
                         GameInstance.instance.bPause = true;
                     }
@@ -82,6 +75,9 @@ public class GameManager : MonoBehaviour
         GameInstance.instance.PlayTime = 0;
         GameInstance.instance.Stage = 1;
         GameInstance.instance.PlayerWeapon = "Pistol";
+        UiManager.uiManager.MainUi.ChangeWeapon();
+        GameInstance.instance.PlayerHp = 5;
+        UiManager.uiManager.MainUi.ChangePlayerHp();
         GameInstance.instance.PistolBullets = 6;
         GameInstance.instance.RifleBullets = 3;
 
@@ -96,9 +92,16 @@ public class GameManager : MonoBehaviour
         GameInstance.instance.Item4 = false;
     }
 
+    public void GameClear()
+    {
+        UiManager.uiManager.MainUi.GameClear();
+        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.GameClear);
+    }
+
     public void GameOver()
     {
         GameInstance.instance.bPlaying = false;
         SoundManager.soundManager.StopBgm();
+        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.GameOver);
     }
 }

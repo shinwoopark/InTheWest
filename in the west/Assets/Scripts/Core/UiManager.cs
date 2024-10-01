@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class UiManager : MonoBehaviour
 {
     public static UiManager uiManager;
 
-    
     public HelpUi HelpUi;
     public MainUi MainUi;
     public ShopUi ShopUi;
@@ -56,5 +56,26 @@ public class UiManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    public void ExitMenu()
+    {
+        GameInstance.instance.bPlaying = false;
+        GameInstance.instance.bPause = false;
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainScene");
+        SetMenu();
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene("PlayScene");
+        StartCoroutine(ResetItem());
+    }
+
+    private IEnumerator ResetItem()
+    {
+        yield return new WaitForSeconds(0.1f);
+        GameManager.manager.GameStart();
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.Animations;
 
 public class PlayerSystem : MonoBehaviour
 {
+    private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
     private float _knuckBackTiem;
@@ -13,13 +14,13 @@ public class PlayerSystem : MonoBehaviour
 
     private void Awake()
     {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
         UpdateBorder();
-        UpdateHp();
     }
 
     private void FixedUpdate()
@@ -39,16 +40,6 @@ public class PlayerSystem : MonoBehaviour
         transform.position = Camera.main.ViewportToWorldPoint(pos);
     }
 
-    private void UpdateHp()
-    {
-        if (GameInstance.instance.PlayerHp <= 0)
-        {
-            GameInstance.instance.PlayerHp = 0;
-            GameManager.manager.GameOver();
-            _animator.SetBool("bTakeDown", true);
-        }         
-    }
-
     private void UpdateKnuckBack()
     {
         if (GameInstance.instance.PlayerHp > 0 && _knuckBackTiem > 0)
@@ -63,6 +54,8 @@ public class PlayerSystem : MonoBehaviour
         if (GameInstance.instance.PlayerHp <= 0)
             return;
 
+        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Hit);
+
         if (GameInstance.instance.Item4)
         {
             GameInstance.instance.Item4 = false;
@@ -71,6 +64,8 @@ public class PlayerSystem : MonoBehaviour
 
         GameInstance.instance.PlayerHp -= damage;
         _knuckBack = KnuckBack;
+
+        StartCoroutine(Blink());
 
         if (direction - transform.position.x > 0)
             _directoin = -1;
@@ -86,5 +81,12 @@ public class PlayerSystem : MonoBehaviour
             GameManager.manager.GameOver();
             _animator.SetBool("bTakeDown", true);
         }
+    }
+
+    private IEnumerator Blink()
+    {
+        _spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+        yield return new WaitForSeconds(0.3f);
+        _spriteRenderer.color = new Color(1, 1, 1, 1);
     }
 }

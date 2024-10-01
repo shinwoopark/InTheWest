@@ -10,6 +10,7 @@ public class EnemySpawnManager : MonoBehaviour
     private float _time = 5;
     private int _enemyScore;
     private bool _bEnemySpawn = false;
+    private bool _bBossSpawn = false;
 
     private void Update()
     {
@@ -21,13 +22,10 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void UpdateWave()
     {
-        Debug.Log(_wave);
-        Debug.Log(_time);
-
-        if (_time < 7.5f)
+        if (_bBossSpawn)
             return;
 
-        if(_wave >= 5)
+        if (_wave >= 5)
         {
             GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
 
@@ -37,15 +35,24 @@ public class EnemySpawnManager : MonoBehaviour
                 {
                     GameInstance.instance.Stage++;
                     UiManager.uiManager.ShopUi.gameObject.SetActive(true);
+
                     Time.timeScale = 0;
                     GameInstance.instance.bShoping = true;
                     _wave = 1;
                 }
                 else
+                {
                     SpawnBossEnemy(0, -1);
-            }     
+                    _bBossSpawn = true;
+                }
+
+            }
         }
-        else if (_wave < 5)
+
+        if (_time < 7.5f)
+            return;      
+
+        if (_wave < 5)
         {
             int enemy1Count = 0;
             int enemy2Count = 0;
@@ -75,7 +82,6 @@ public class EnemySpawnManager : MonoBehaviour
 
     private IEnumerator SpawnEnemy(int enemy1Count, int enemy2Count)
     {
-        
         int enemySpaneCount = 0;
         int dir = 1;
 
@@ -124,6 +130,5 @@ public class EnemySpawnManager : MonoBehaviour
     private void SpawnBossEnemy(int enemy, int dir)
     {
         Instantiate(BossEnemy[enemy], new Vector3(9.5f * dir, -3f, 0), Quaternion.identity);
-        //SoundManager.soundManager.PlayBgm(SoundManager.Bgm.Boss);
     }
 }

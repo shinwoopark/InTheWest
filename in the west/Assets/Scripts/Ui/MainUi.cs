@@ -10,11 +10,18 @@ public class MainUi : MonoBehaviour
     public TextMeshProUGUI PlayTime, PistolBullets, RifleBullets, RifleBullet, Item1, Item2, Item3;
     public GameObject Item4;
     public RectTransform Item4_tr;
+
     public GameObject Pause;
+
     public GameObject[] HitHps;
     public RectTransform[] Weapons;
     public GameObject Buttons;
-    public Image BackGround;
+
+    public GameObject GameClear_gb;
+    public TextMeshProUGUI Record;
+
+    public GameObject GameOver_gb;
+    public Image BackGroundColor;
 
     private void Update()
     {
@@ -27,9 +34,23 @@ public class MainUi : MonoBehaviour
         UpdatePuase();
     }
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameClear_gb.SetActive(false);
+
+        BackGroundColor.color = new Color(0, 0, 0, 0);
+        Buttons.SetActive(false);
+        GameOver_gb.SetActive(false);
+    }
+
     private void UpdatePlayeTime()
     {
-        PlayTime.text = GameInstance.instance.PlayTime.ToString("F0");
+        PlayTime.text = GameInstance.instance.PlayTime.ToString("F2");
     }
 
     private void UpdatePause()
@@ -37,14 +58,22 @@ public class MainUi : MonoBehaviour
         Pause.SetActive(GameInstance.instance.bPause);
     }
 
+    public void GameClear()
+    {
+        GameClear_gb.SetActive(true);
+        Record.text = GameInstance.instance.PlayTime.ToString("F2");
+    }
+
     private void UpdateGameOver()
     {
         if (GameInstance.instance.bPlaying)
             return;
 
-        BackGround.color += new Color(0, 0, 0, 0.3f) * Time.deltaTime;
+        GameOver_gb.SetActive(true);
 
-        if (BackGround.color.a >= 1)
+        BackGroundColor.color += new Color(0, 0, 0, 0.3f) * Time.deltaTime;
+
+        if (BackGroundColor.color.a >= 1)
         {
             Buttons.SetActive(true);
         }
@@ -118,16 +147,5 @@ public class MainUi : MonoBehaviour
             Weapons[1].anchoredPosition = new Vector3(-815, 270, 0);
             Weapons[1].localScale = Vector3.one;
         }
-    }
-
-    //Buttons
-    public void ExitMain()
-    {
-        SceneManager.LoadScene("MainScene");
-    }
-
-    public void Retry()
-    {
-        SceneManager.LoadScene("PlayScene");
     }
 }

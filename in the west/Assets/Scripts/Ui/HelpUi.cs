@@ -17,7 +17,7 @@ public class HelpUi : MonoBehaviour
 
     private void UpdatePanelMove()
     {
-        Panel.transform.position += new Vector3(0, MoveSpeed * -_wheelSpeed, 0) * Time.deltaTime;
+        Panel.transform.position += new Vector3(0, MoveSpeed * -_wheelSpeed*0.01f, 0) * Time.deltaTime;
 
         if (Panel.anchoredPosition.y <= 0)
             Panel.anchoredPosition = Vector3.zero;

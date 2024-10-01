@@ -27,8 +27,6 @@ public class Boss1 : MonoBehaviour
 
     public GameObject Projectile;
 
-    public Transform _jumpPos;
-
     public float JumpPower;
     public float RollSpeed;
     public int Damage;
@@ -214,6 +212,7 @@ public class Boss1 : MonoBehaviour
         AckBoxSize = new Vector2(2, 1);
         yield return new WaitForSeconds(0.5f);
         _bAtk = true;
+        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swing);
         yield return new WaitForSeconds(0.1f);
         _bAtk = false;
         yield return new WaitForSeconds(0.2f);
@@ -236,6 +235,7 @@ public class Boss1 : MonoBehaviour
         for(int i = 0; i < 2; i++)
         {
             _bAtk = true;
+            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swing);
             yield return new WaitForSeconds(0.1f);
             _bAtk = false;
             yield return new WaitForSeconds(0.2f);
@@ -259,6 +259,7 @@ public class Boss1 : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             _bAtk = true;
+            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swing);
             yield return new WaitForSeconds(0.1f);
             _bAtk = false;
             yield return new WaitForSeconds(0.2f);
@@ -267,6 +268,7 @@ public class Boss1 : MonoBehaviour
         Damage = 2;
         KnunkBack = 15;
         _bAtk = true;
+        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swings);
         yield return new WaitForSeconds(0.1f);
         _bAtk = false;
         yield return new WaitForSeconds(0.6f);
@@ -284,10 +286,12 @@ public class Boss1 : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         _enemyProjectile = Instantiate(Projectile, transform.position, Quaternion.identity).GetComponent<EnemyProjectile>();
-
+        
         _enemyProjectile.Dir = new Vector3(_dir, 0, 0);
         _enemyProjectile.Dir.Normalize();
         _enemyProjectile.SetDir();
+
+        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Throw);
 
         yield return new WaitForSeconds(0.3f);
 
@@ -310,6 +314,8 @@ public class Boss1 : MonoBehaviour
         _enemyProjectile.Dir.Normalize();
         _enemyProjectile.SetDir();
 
+        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Throw);
+
         yield return new WaitForSeconds(0.3f);
 
         _animator.SetBool("bProjectileCast", false);
@@ -322,6 +328,7 @@ public class Boss1 : MonoBehaviour
     {
         _animator.SetBool("bRoll", true);
         _bRoll = true;
+        SoundManager.soundManager.PlaySfx( SoundManager.Sfx.Roll);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -359,6 +366,12 @@ public class Boss1 : MonoBehaviour
 
             yield return new WaitForSeconds(delay);
             _bAtk = true;
+
+            if (i == 0)
+                SoundManager.soundManager.PlaySfx(SoundManager.Sfx.SpAtk1);
+            else
+                SoundManager.soundManager.PlaySfx(SoundManager.Sfx.SpAtk2);
+
             yield return new WaitForSeconds(0.1f);
             _bAtk = false;
             yield return new WaitForSeconds(0.4f);

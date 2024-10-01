@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -30,6 +31,8 @@ public class PlayerControl : MonoBehaviour
     private float _rollingTime;
 
     private string _weapon = "Pistol";
+    private bool _bFire;
+    private bool _bFireBlind;
     private int _fireCount;
     private bool _bAddFireCount;
     private float _fireTime;
@@ -37,6 +40,7 @@ public class PlayerControl : MonoBehaviour
 
     private float _loadPistolCooltime;
     private float _loadRifleCooltime;
+    private bool _bQuickReload;
 
     public LayerMask Eneny;
 
@@ -91,6 +95,7 @@ public class PlayerControl : MonoBehaviour
                 GameInstance.instance.PlayerWeapon = "Pistol";
 
             UiManager.uiManager.MainUi.ChangeWeapon();
+            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swich);
         }
 
         if (CurrentState == PlayerState.Idle || CurrentState == PlayerState.Load)
@@ -112,6 +117,7 @@ public class PlayerControl : MonoBehaviour
             {
                 CurrentState = PlayerState.Rolling;
                 _rollingCooltime = 0.5f;
+                SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Roll);
             }
 
             if (Input.GetKeyDown(KeyCode.X))
@@ -120,17 +126,19 @@ public class PlayerControl : MonoBehaviour
                     && GameInstance.instance.PistolBullets > 0)
                 {
                     _weapon = GameInstance.instance.PlayerWeapon;
-                    _bAddFireCount = false;
+                    StartCoroutine(Fire(0.1f));
                     CurrentState = PlayerState.Fire;
                     GameInstance.instance.PistolBullets--;
+                    SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Pistol);
                 }
                 else if (GameInstance.instance.PlayerWeapon == "Rifle"
                          && GameInstance.instance.RifleBullets > 0)
                 {
                     _weapon = GameInstance.instance.PlayerWeapon;
-                    _bAddFireCount = false;
+                    StartCoroutine(Fire(0.2f));
                     CurrentState = PlayerState.Fire;
                     GameInstance.instance.RifleBullets--;
+                    SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Rifle);
                 }
             }
 
@@ -139,8 +147,9 @@ public class PlayerControl : MonoBehaviour
                 if (GameInstance.instance.PlayerWeapon == "Pistol"
                     && GameInstance.instance.PistolBullets > 0)
                 {
-                    _bAddFireCount = false;
+                    StartCoroutine(FireBlindlyPistol(0.2f));
                     CurrentState = PlayerState.FireBlindlyPistol;
+                    SoundManager.soundManager.PlaySfx(SoundManager.Sfx.FireBlindlyPistol);
                 }
             }
         }
@@ -209,18 +218,45 @@ public class PlayerControl : MonoBehaviour
 
     private void UpdateFireRaycast()
     {
-        if (CurrentState == PlayerState.Fire || CurrentState == PlayerState.FireBlindlyPistol)
-        {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _playerDirection, 20, Eneny);
-            Debug.DrawRay(transform.position, Vector3.right * _playerDirection * 20, Color.blue);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _playerDirection, 20, Eneny);
+        Debug.DrawRay(transform.position, Vector3.right * _playerDirection * 20, Color.blue);
 
-            if (_fireCount > 0 && hit.collider != null)
+        if (_bFire)
+        {
+            if (hit.collider != null)
             {
                 _enemySystem = hit.collider.gameObject.GetComponent<EnemySystem>();
                 _enemySystem.Hit(_weapon, transform.position.x);
-                _fireCount--;
+                _bFire = false;
+            }
+            else
+                _bFire = false;
+        }
+
+        if (_bFireBlind && _fireCount > 0)
+        {
+            if (hit.collider != null)
+            {
+                for (; 0 < _fireCount;)
+                {
+                    _enemySystem = hit.collider.gameObject.GetComponent<EnemySystem>();
+                    _enemySystem.Hit(_weapon, transform.position.x);
+                    _fireCount--;
+                }
+                _bFireBlind = false;
+            }
+            else
+            {
+                _fireCount = 0;
+                _bFireBlind = false;           
             }
         }
+    }
+
+    private IEnumerator Fire(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _bFire = true;
     }
 
     private void UpdateFire()
@@ -228,12 +264,6 @@ public class PlayerControl : MonoBehaviour
         if (CurrentState == PlayerState.Fire)
         {
             _fireTime += Time.deltaTime;
-
-            if (!_bAddFireCount && _fireTime >= 0.1f)
-            {
-                _fireCount++;
-                _bAddFireCount = true;
-            }
 
             if (_weapon == "Pistol")
             {
@@ -258,6 +288,12 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    private IEnumerator FireBlindlyPistol(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _bFireBlind = true;
+    }
+
     private void UpdateFireBlindlyPistol()
     {
         if (CurrentState == PlayerState.FireBlindlyPistol)
@@ -265,20 +301,18 @@ public class PlayerControl : MonoBehaviour
             _animator.SetBool("bFireBlindlyPistol", true);
             _fireBlindlyTime += Time.deltaTime;
 
-            if (GameInstance.instance.Item3 && !_bAddFireCount && _fireBlindlyTime >= 0.2f)
+            if (GameInstance.instance.Item3 && _bFireBlind)
             {
                 UpgradeFireBlindlyPistol();
                 GameInstance.instance.PistolBullets = 0;
-                _bAddFireCount = true;
                 GameInstance.instance.Item3 = false;
             }
             else
             {
-                if (!_bAddFireCount && _fireBlindlyTime >= 0.2f)
+                if (_bFireBlind)
                 {
                     _fireCount = GameInstance.instance.PistolBullets;
                     GameInstance.instance.PistolBullets = 0;
-                    _bAddFireCount = true;
                 }
             }
 
@@ -294,7 +328,12 @@ public class PlayerControl : MonoBehaviour
 
     private void UpgradeFireBlindlyPistol()
     {
-        if (GameManager.manager.CurrentEnemyCount == 0) return;
+        if (GameManager.manager.CurrentEnemyCount == 0)
+        {
+            _bFireBlind = false;
+            return;
+        }
+        
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
@@ -303,6 +342,8 @@ public class PlayerControl : MonoBehaviour
             _enemySystem = enemies[i].GetComponent<EnemySystem>();
             _enemySystem.Hit("Pistol", transform.position.x);
         }
+
+        _bFireBlind = false;
     }
 
     private void UpdateLoad()
@@ -316,6 +357,12 @@ public class PlayerControl : MonoBehaviour
                 if (GameInstance.instance.Item1)
                 {
                     _animator.SetBool("bQuickLoadPistol", true);
+
+                    if (!_bQuickReload)
+                    {
+                        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.QuickReload);
+                        _bQuickReload = true;
+                    }
 
                     if (_loadPistolCooltime / 2 <= 0)
                     {
@@ -331,6 +378,7 @@ public class PlayerControl : MonoBehaviour
                     {
                         GameInstance.instance.PistolBullets++;
                         _loadPistolCooltime = 0.5f;
+                        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Reload);
                     }
                 }
 
@@ -379,6 +427,7 @@ public class PlayerControl : MonoBehaviour
                         GameInstance.instance.RifleBullets++;
                         GameInstance.instance.ItemInventroy[3]--;
                         _loadRifleCooltime = 0.5f;
+                        SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Reload);
                     }
                 }
 
@@ -393,6 +442,7 @@ public class PlayerControl : MonoBehaviour
         {
             _loadPistolCooltime = 0.6f;
             _loadRifleCooltime = 0.6f;
+            _bQuickReload = false;
             _animator.SetBool("bLoadPistol", false);
             _animator.SetBool("bQuickLoadPistol", false);
             _animator.SetBool("bQuickLoadRifle", false);
