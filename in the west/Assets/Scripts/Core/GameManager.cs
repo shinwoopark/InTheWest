@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                if (!GameInstance.instance.bShoping)
+                if (!GameInstance.instance.bUpgrading)
                 {
                     if (GameInstance.instance.bPause)
                     {

@@ -370,8 +370,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -45}
-  m_SizeDelta: {x: 300, y: 50}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 375, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &67965647
 MonoBehaviour:
@@ -420,8 +420,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1312,7 +1312,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 237468080}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1999410499}
+        m_TargetAssemblyTypeName: UpgradeUi, Assembly-CSharp
+        m_MethodName: ChooseModules
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &237468080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1385,8 +1397,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -45}
-  m_SizeDelta: {x: 300, y: 50}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 375, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &238041183
 MonoBehaviour:
@@ -1408,7 +1420,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uBAA8\uC790 \uC544\uC774\uD15C\uC744\n\uD68D\uB4DD\uD569\uB2C8\uB2E4."
+  m_text: "\uBAA8\uC790 \uC544\uC774\uD15C \uC678 \uBAA8\uB4E0 \uC544\uC774\uD15C\uC744
+    1\uAC1C \uD68D\uB4DD\uD569\uB2C8\uB2E4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 01726bc3f18ab4d4cbb47b4e5cbc6545, type: 2}
   m_sharedMaterial: {fileID: 4106355527678093129, guid: 01726bc3f18ab4d4cbb47b4e5cbc6545, type: 2}
@@ -1435,8 +1448,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1569,7 +1582,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 243087172}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1999410499}
+        m_TargetAssemblyTypeName: UpgradeUi, Assembly-CSharp
+        m_MethodName: ChooseModules
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &243087172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2827,11 +2852,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HelpUi: {fileID: 1248013489}
   MainUi: {fileID: 1552197645}
-  ShopUi: {fileID: 1999410499}
-  MenuCanvas: {fileID: 1690956267}
+  UpgradeUi: {fileID: 0}
+  MenuCanvas: {fileID: 1999410497}
   HelpCanvas: {fileID: 1248013484}
   MainCanvas: {fileID: 1552197643}
-  ShopCanvas: {fileID: 1999410497}
+  UpgradeCanvas: {fileID: 0}
 --- !u!1 &495740820
 GameObject:
   m_ObjectHideFlags: 0
@@ -3914,7 +3939,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 565889489}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1999410499}
+        m_TargetAssemblyTypeName: UpgradeUi, Assembly-CSharp
+        m_MethodName: ChooseModules
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &565889489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6421,7 +6458,7 @@ MonoBehaviour:
   bPause: 0
   PlayTime: 0
   Stage: 0
-  bShoping: 0
+  bUpgrading: 0
   PlayerHp: 5
   PlayerWeapon: Pistol
   PistolBullets: 6
@@ -6523,6 +6560,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988360710}
   m_CullTransparentMesh: 1
+--- !u!1 &992100082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 992100084}
+  - component: {fileID: 992100083}
+  m_Layer: 0
+  m_Name: UpgradeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &992100083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992100082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 062866c545ca08749a3b6176637d8ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpgradeModule: 000000000200000003000000010000000000000003000000020000000300000001000000
+--- !u!4 &992100084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992100082}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1006397312
 GameObject:
   m_ObjectHideFlags: 0
@@ -7954,8 +8036,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -45}
-  m_SizeDelta: {x: 300, y: 50}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 375, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1280616259
 MonoBehaviour:
@@ -8004,8 +8086,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -12806,6 +12888,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49980a06573028f46be9c7686264b05d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Images: []
+  Texts: []
+  ModuleImages: []
 --- !u!114 &1999410500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14267,3 +14352,4 @@ SceneRoots:
   - {fileID: 1337060677}
   - {fileID: 755576323}
   - {fileID: 1757829949}
+  - {fileID: 992100084}

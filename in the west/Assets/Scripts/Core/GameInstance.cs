@@ -11,7 +11,7 @@ public class GameInstance : MonoBehaviour
     public float PlayTime;
 
     public int Stage;
-    public bool bShoping;
+    public bool bUpgrading;
 
     public int PlayerHp;
 

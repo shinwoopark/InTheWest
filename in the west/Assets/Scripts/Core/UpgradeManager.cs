@@ -6,7 +6,7 @@ public class UpgradeManager : MonoBehaviour
 {
     public static UpgradeManager upgradeManager;
 
-    public Dictionary<string ,int> UpgradeModule = new Dictionary<string, int>();
+    public List<int> UpgradeModule = new List<int>();
 
     private void Awake()
     {
@@ -21,14 +21,55 @@ public class UpgradeManager : MonoBehaviour
 
     private void Init()
     {
-        UpgradeModule.Add("비장의 한발", 0);
-        UpgradeModule.Add("섬광탄 폭발", 0);
-        UpgradeModule.Add("해드샷", 0);
-        UpgradeModule.Add("빠른 사격", 0);
-        UpgradeModule.Add("광전사", 0);
-        UpgradeModule.Add("행운", 0);
-        UpgradeModule.Add("멀리 던지기", 0);
-        UpgradeModule.Add("작은 선물", 0);
-        UpgradeModule.Add("몸통 박치기", 0);
+        UpgradeModule.Clear();
+
+        for (int i = 0; i < 9; i++)
+            UpgradeModule.Add(0);
+    }
+
+    public void Upgrade(int module)
+    {
+        UpgradeModule[module]++;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            ChooseModule();
+        }
+    }
+
+    private void ChooseModule()
+    {
+        List<int> availableNumbers = new List<int>();
+
+        for (int i = 0; i < UpgradeModule.Count; i++)
+        {
+            if (UpgradeModule[i] < 3)
+            {
+                availableNumbers.Add(i);
+            }
+        }
+
+        int[] chooseModules = new int[3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            int randomIndex = Random.Range(0, availableNumbers.Count);
+            chooseModules[i] = availableNumbers[randomIndex];
+            availableNumbers.RemoveAt(randomIndex);
+        }
+
+        int disposableModule = 0;
+
+        if (!GameInstance.instance.Item4 && Random.Range(0, 4) == 0)
+            disposableModule = 9;
+        if (disposableModule == 0 && GameInstance.instance.PlayerHp < 5 && Random.Range(0, 4) == 0)
+            disposableModule = 10;
+        if (disposableModule == 0 && Random.Range(0, 4) == 0)
+            disposableModule = 11;
+
+        UiManager.uiManager.UpgradeUi.SetModule(chooseModules, disposableModule);
     }
 }

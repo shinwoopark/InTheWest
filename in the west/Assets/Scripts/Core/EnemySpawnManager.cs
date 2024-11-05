@@ -34,10 +34,10 @@ public class EnemySpawnManager : MonoBehaviour
                 if (GameInstance.instance.Stage < 3)
                 {
                     GameInstance.instance.Stage++;
-                    UiManager.uiManager.ShopUi.gameObject.SetActive(true);
+                    UiManager.uiManager.UpgradeUi.gameObject.SetActive(true);
 
                     Time.timeScale = 0;
-                    GameInstance.instance.bShoping = true;
+                    GameInstance.instance.bUpgrading = true;
                     _wave = 1;
                 }
                 else

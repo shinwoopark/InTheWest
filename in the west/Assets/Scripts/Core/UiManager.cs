@@ -9,12 +9,12 @@ public class UiManager : MonoBehaviour
 
     public HelpUi HelpUi;
     public MainUi MainUi;
-    public ShopUi ShopUi;
+    public UpgradeUi UpgradeUi;
 
     public GameObject MenuCanvas;
     public GameObject HelpCanvas;
     public GameObject MainCanvas;
-    public GameObject ShopCanvas;
+    public GameObject UpgradeCanvas;
 
     private void Awake()
     {
@@ -32,7 +32,7 @@ public class UiManager : MonoBehaviour
         MenuCanvas.SetActive(true);
         HelpCanvas.SetActive(false);
         MainCanvas.SetActive(false);
-        ShopCanvas.SetActive(false);
+        UpgradeCanvas.SetActive(false);
     }
 
     //Buttons
