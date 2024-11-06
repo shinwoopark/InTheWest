@@ -88,8 +88,7 @@ public class GameManager : MonoBehaviour
 
         GameInstance.instance.Item1 = false;
         GameInstance.instance.Item2 = false;
-        GameInstance.instance.Item3 = false;
-        GameInstance.instance.Item4 = false;
+        GameInstance.instance.bHatItem = false;
     }
 
     public void GameClear()

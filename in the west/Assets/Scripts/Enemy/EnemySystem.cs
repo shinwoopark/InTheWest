@@ -101,12 +101,12 @@ public class EnemySystem : MonoBehaviour
         {
             int item = 0;
 
-            if (!GameInstance.instance.Item4)
+            if (!GameInstance.instance.bHatItem)
             {
                 item = Random.Range(0, 5);
 
                 if (item == 4)
-                    GameInstance.instance.Item4 = true;
+                    GameInstance.instance.bHatItem = true;
                 else
                     GameInstance.instance.ItemInventroy[item]++;
             }
@@ -123,18 +123,22 @@ public class EnemySystem : MonoBehaviour
         GameManager.manager.CurrentEnemyCount--;
     }
 
-    public void Hit(string weapon, float direction)
+    public void Hit(string weapon, float direction, int additionalDamage)
     {
+        int damage = 0;
+
         if (weapon == "Pistol")
         {
-            Hp--;
+            damage = 1;
             _knuckBack = 5;
         }
         else
         {
-            Hp -= 3;
+            damage = 3;
             _knuckBack = 10;
         }
+
+        Hp -= damage + additionalDamage;
 
         if (direction - transform.position.x > 0)
             _directoin = -1;

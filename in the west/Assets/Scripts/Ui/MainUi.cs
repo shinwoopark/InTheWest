@@ -95,7 +95,7 @@ public class MainUi : MonoBehaviour
 
     private void UpdateItem4()
     {
-        if (GameInstance.instance.Item4)
+        if (GameInstance.instance.bHatItem)
         {
             float posX = 0;
 

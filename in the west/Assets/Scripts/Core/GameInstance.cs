@@ -24,8 +24,7 @@ public class GameInstance : MonoBehaviour
     public int[] ItemInventroy;
     public bool Item1;  //빠른 장전
     public bool Item2;  //구르기 강화
-    public bool Item3;  //난사 강화
-    public bool Item4;  //1회 무적
+    public bool bHatItem;  //1회 무적
 
     private void Awake()
     {

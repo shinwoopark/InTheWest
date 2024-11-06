@@ -7,9 +7,26 @@ using System.Collections.Generic;
 public class UpgradeUi : MonoBehaviour
 {
     public Image[] Images;
-    public TextMeshPro[] Texts;
+    public TextMeshProUGUI[] Names;
+    public TextMeshProUGUI[] Explanations;
 
     public Sprite[] ModuleImages;
+
+    private List<string> _ModulesNames = new List<string>
+    {
+        "마지막 한 발",
+        "섬광탄 폭발",
+        "헤드샷",
+        "재빠른 사격",
+        "광전사",
+        "행운",
+        "멀리 던지기",
+        "작은 선물",
+        "몸통박치기",
+        "카우보이 모자",
+        "하트",
+        "만능 주머니"
+    };
 
     private List<string> _explanationModules = new List<string>
     {
@@ -31,11 +48,14 @@ public class UpgradeUi : MonoBehaviour
 
     public void SetModule(int[] modules, int disposableModule)
     {
+        _currentModules = new int[modules.Length];
+
         for (int i = 0; i < modules.Length; i++)
         {
             _currentModules[i] = modules[i];
             Images[i].sprite = ModuleImages[modules[i]];
-            Texts[i].text = _explanationModules[modules[i]];
+            Names[i].text = _ModulesNames[modules[i]];
+            Explanations[i].text = _explanationModules[modules[i]];
         }
 
         if (disposableModule != 0)
@@ -44,7 +64,8 @@ public class UpgradeUi : MonoBehaviour
 
             _currentModules[changeModule] = disposableModule;
             Images[changeModule].sprite = ModuleImages[disposableModule];
-            Texts[changeModule].text = _explanationModules[disposableModule];
+            Names[changeModule].text = _ModulesNames[disposableModule];
+            Explanations[changeModule].text = _explanationModules[disposableModule];
         }
     }
 
@@ -68,7 +89,7 @@ public class UpgradeUi : MonoBehaviour
             switch (_currentModules[number])
             {
                 case 9:
-                    GameInstance.instance.Item4 = true;
+                    GameInstance.instance.bHatItem = true;
                     break;
                 case 10:
                     GameInstance.instance.PlayerHp++;

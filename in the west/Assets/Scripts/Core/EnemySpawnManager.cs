@@ -35,6 +35,7 @@ public class EnemySpawnManager : MonoBehaviour
                 {
                     GameInstance.instance.Stage++;
                     UiManager.uiManager.UpgradeUi.gameObject.SetActive(true);
+                    UpgradeManager.upgradeManager.ChooseModule();
 
                     Time.timeScale = 0;
                     GameInstance.instance.bUpgrading = true;

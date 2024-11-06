@@ -56,9 +56,9 @@ public class PlayerSystem : MonoBehaviour
 
         SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Hit);
 
-        if (GameInstance.instance.Item4)
+        if (GameInstance.instance.bHatItem)
         {
-            GameInstance.instance.Item4 = false;
+            GameInstance.instance.bHatItem = false;
             return;
         }
 

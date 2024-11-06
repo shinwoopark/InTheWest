@@ -17,6 +17,8 @@ public class UpgradeManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
+
+        Init();
     }
 
     private void Init()
@@ -40,7 +42,7 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    private void ChooseModule()
+    public void ChooseModule()
     {
         List<int> availableNumbers = new List<int>();
 
@@ -63,7 +65,7 @@ public class UpgradeManager : MonoBehaviour
 
         int disposableModule = 0;
 
-        if (!GameInstance.instance.Item4 && Random.Range(0, 4) == 0)
+        if (!GameInstance.instance.bHatItem && Random.Range(0, 4) == 0)
             disposableModule = 9;
         if (disposableModule == 0 && GameInstance.instance.PlayerHp < 5 && Random.Range(0, 4) == 0)
             disposableModule = 10;
