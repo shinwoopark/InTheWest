@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3617229106262125243}
   - component: {fileID: 1570603073649634710}
   - component: {fileID: 3875147853865356928}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlashBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cf43517df327824a8245166f7e9bcb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Explosion: {fileID: 8247593869180109256, guid: 57d23d1e6d731454d8bad28454c3c0b1, type: 3}
+  Explosion: {fileID: 8308545655383008973, guid: 57d23d1e6d731454d8bad28454c3c0b1, type: 3}
   MoveSpeed: 5
   RotationSpeed: 120
   BombTimer: 3

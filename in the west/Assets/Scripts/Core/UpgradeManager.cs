@@ -21,17 +21,12 @@ public class UpgradeManager : MonoBehaviour
         Init();
     }
 
-    private void Init()
+    public void Init()
     {
         UpgradeModule.Clear();
 
         for (int i = 0; i < 9; i++)
             UpgradeModule.Add(0);
-    }
-
-    public void Upgrade(int module)
-    {
-        UpgradeModule[module]++;
     }
 
     private void Update()

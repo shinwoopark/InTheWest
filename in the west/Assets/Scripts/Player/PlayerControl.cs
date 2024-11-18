@@ -21,7 +21,6 @@ public class PlayerControl : MonoBehaviour
     private EnemySystem _enemySystem;
     private FlashBomb _flashBomb;
 
-    public GameObject IdleCollider, RollingCollider;
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
@@ -46,6 +45,9 @@ public class PlayerControl : MonoBehaviour
     private float _loadRifleCooltime;
     private bool _bQuickReload;
 
+    private float _quickFire;
+    private bool _bHittingBody;
+
     public LayerMask Eneny;
 
     private void Awake()
@@ -63,7 +65,10 @@ public class PlayerControl : MonoBehaviour
         UpdateFireRaycast();
         UpdateFire();
         UpdateFireBlindlyPistol();
+        UpdateHittingbody();
         UpdateLoad();
+
+        _quickFire -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -77,14 +82,12 @@ public class PlayerControl : MonoBehaviour
     {
         if (CurrentState == PlayerState.Rolling)
         {
-            IdleCollider.SetActive(false);
-            RollingCollider.SetActive(true);
+            gameObject.layer = 9;
             _animator.SetBool("bRolling", true);
         }
         else
         {
-            IdleCollider.SetActive(true);
-            RollingCollider.SetActive(false);
+            gameObject.layer = 3;
             _animator.SetBool("bRolling", false);
         }
     }
@@ -122,6 +125,18 @@ public class PlayerControl : MonoBehaviour
                 CurrentState = PlayerState.Rolling;
                 _rollingCooltime = 0.5f;
                 SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Roll);
+
+                //빠른 사격 타이머
+                if (UpgradeManager.upgradeManager.UpgradeModule[3] > 0)
+                    _quickFire = 0.6f;
+
+                //작은 선물
+                if (UpgradeManager.upgradeManager.UpgradeModule[7] > 0
+                    && Random.Range(UpgradeManager.upgradeManager.UpgradeModule[7], 6) == 5)
+                {
+                    _flashBomb = Instantiate(FlashBomb, transform.position, Quaternion.identity).GetComponent<FlashBomb>();
+                    _flashBomb.Direction = 0;
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.X))
@@ -190,6 +205,7 @@ public class PlayerControl : MonoBehaviour
         {
             StartCoroutine(Flashingbullets());
             GameInstance.instance.ItemInventroy[2]--;
+            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.FlashBomb);
         }
     }
 
@@ -232,6 +248,7 @@ public class PlayerControl : MonoBehaviour
 
                 _enemySystem = hit.collider.gameObject.GetComponent<EnemySystem>();
 
+                //마지막 한 발
                 if (GameInstance.instance.PistolBullets == 0 && UpgradeManager.upgradeManager.UpgradeModule[0] > 0)
                 {
                     for (int i = 0; i < UpgradeManager.upgradeManager.UpgradeModule[0]; i++)
@@ -239,6 +256,37 @@ public class PlayerControl : MonoBehaviour
                         additionalDamage++;
                     }                  
                 }
+
+                //헤드샷
+                if (hit.collider.gameObject.tag == "Enemy" && UpgradeManager.upgradeManager.UpgradeModule[2] > 0)
+                {
+                    switch (UpgradeManager.upgradeManager.UpgradeModule[2])
+                    {
+                        case 1:
+                            if (Random.Range(0, 5) == 0)
+                                additionalDamage = 100;
+                            break;
+                        case 2:
+                            if (Random.Range(0, 4) == 0)
+                                additionalDamage = 100;
+                            break;
+                        case 3:
+                            if (Random.Range(0, 3) == 0)
+                                additionalDamage = 100;
+                            break;
+                    }
+                }
+
+                //빠른사격
+                if (_quickFire > 0)
+                {
+                    additionalDamage = UpgradeManager.upgradeManager.UpgradeModule[3];
+                    _quickFire = 0;
+                }
+
+                //광전사
+                if (GameInstance.instance.PlayerHp == 1 && UpgradeManager.upgradeManager.UpgradeModule[4] > 0)
+                    additionalDamage = UpgradeManager.upgradeManager.UpgradeModule[4];
 
                 _enemySystem.Hit(_weapon, transform.position.x, additionalDamage);
                 _bFire = false;
@@ -343,6 +391,22 @@ public class PlayerControl : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         _animator.SetBool("bThrow", false);       
+    }
+
+    private void UpdateHittingbody()
+    {
+        if (UpgradeManager.upgradeManager.UpgradeModule[8] > 0 && CurrentState != PlayerState.Rolling)
+        {
+            if (GameInstance.instance.HittingCoolBodyTime < 5)
+                GameInstance.instance.HittingCoolBodyTime += Time.deltaTime;
+            else
+            {
+                GameInstance.instance.HittingCoolBodyTime = 5;
+                _bHittingBody = true;
+            }
+        }       
+        else
+            GameInstance.instance.HittingCoolBodyTime = 0;
     }
 
     private void UpdateLoad()
@@ -463,6 +527,16 @@ public class PlayerControl : MonoBehaviour
                 _spriteRenderer.flipX = true;
                 _playerDirection = -1;
             }
+        }
+
+        if (CurrentState == PlayerState.Rolling && _bHittingBody)
+        {
+            if(collision.gameObject.layer == 7)
+            {
+                _enemySystem = collision.gameObject.GetComponent<EnemySystem>();
+                _enemySystem.Hit("Body", transform.position.x, 0);             
+            }
+            _bHittingBody = false;
         }
     }
 }

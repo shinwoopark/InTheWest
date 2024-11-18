@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static SoundManager;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class GameManager : MonoBehaviour
 
     private GameObject _menuCanvas;
     private GameObject _helpCanvas;
+
+    //[HideInInspector]
+    public GameObject Player;
 
     [HideInInspector]
     public int CurrentEnemyCount;
@@ -21,9 +25,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Destroy(manager);
-            manager = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(gameObject);
         }
     }
 
@@ -31,6 +33,7 @@ public class GameManager : MonoBehaviour
     {
         UpdatePlayTime();
         UpdateInput();
+        UpdateLevel();
     }
 
     private void UpdatePlayTime()
@@ -67,6 +70,32 @@ public class GameManager : MonoBehaviour
         } 
     }
 
+    private void UpdateLevel()
+    {
+        if(GameInstance.instance.PlayerEXP >= GameInstance.instance.MaxEXP)
+        {
+            GameInstance.instance.PlayerLevel++;
+            GameInstance.instance.PlayerEXP -= GameInstance.instance.MaxEXP;
+            GameInstance.instance.MaxEXP += 2;
+            UiManager.uiManager.UpgradeUi.gameObject.SetActive(true);
+            UpgradeManager.upgradeManager.ChooseModule();
+            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.OpenUpgrade);
+            Time.timeScale = 0;
+            GameInstance.instance.bUpgrading = true;
+        }
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "PlayScene")
+            Player = GameObject.Find("Player");
+    }
+
     public void GameStart()
     {
         SceneManager.LoadScene("PlayScene");
@@ -77,6 +106,9 @@ public class GameManager : MonoBehaviour
         GameInstance.instance.PlayerWeapon = "Pistol";
         UiManager.uiManager.MainUi.ChangeWeapon();
         GameInstance.instance.PlayerHp = 5;
+        GameInstance.instance.PlayerEXP = 0;
+        GameInstance.instance.PlayerLevel = 0;
+        GameInstance.instance.MaxEXP = 3;
         UiManager.uiManager.MainUi.ChangePlayerHp();
         GameInstance.instance.PistolBullets = 6;
         GameInstance.instance.RifleBullets = 3;
@@ -89,10 +121,13 @@ public class GameManager : MonoBehaviour
         GameInstance.instance.Item1 = false;
         GameInstance.instance.Item2 = false;
         GameInstance.instance.bHatItem = false;
+
+        UpgradeManager.upgradeManager.Init();
     }
 
     public void GameClear()
     {
+        GameInstance.instance.bPlaying = false;
         UiManager.uiManager.MainUi.GameClear();
         SoundManager.soundManager.PlaySfx(SoundManager.Sfx.GameClear);
     }

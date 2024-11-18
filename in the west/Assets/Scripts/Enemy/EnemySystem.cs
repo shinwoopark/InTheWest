@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class EnemySystem : MonoBehaviour
 {
+    public NormalEnemy NormalEnemy;
+    public Boss1 Boss1;
+    public Boss2 Boss2;
+
+    public GameObject HeadShotImage;
+
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
     public int Hp;
     public float DeadTime;
     public bool bKunckBack;
+    public int EXP;
 
     private float _knuckBackTiem;
     private float _knuckBack;
@@ -83,21 +90,26 @@ public class EnemySystem : MonoBehaviour
         _spriteRenderer.color -= new Color(0, 0, 0, DeadTime) * Time.deltaTime;
 
         if (_spriteRenderer.color.a <= 0)
-            Destroy(gameObject);
+        {
+            Dead();
+        }
     }
 
-    private void OnDestroy()
+    private void Dead()
     {
-        if (gameObject.name == "Boss1(Clone)")
+        if (gameObject.tag == "BossEnemy")
         {
-            GameManager.manager.GameClear();
-            return;
+            GameInstance.instance.bBossSpawn = false;
+
+            if (gameObject.name == "Boss2(Clone)")
+            {
+                GameManager.manager.GameClear();
+                Destroy(gameObject);
+                return;
+            }
         }
 
-        if (!GameInstance.instance.bPlaying)
-            return;
-
-        if (Random.Range(0, 2) == 0)
+        if (Random.Range(UpgradeManager.upgradeManager.UpgradeModule[5], 5) == 4)
         {
             int item = 0;
 
@@ -121,36 +133,75 @@ public class EnemySystem : MonoBehaviour
         }
 
         GameManager.manager.CurrentEnemyCount--;
+        GameInstance.instance.PlayerEXP += EXP;
+
+        Destroy(gameObject);
+    }
+
+    private void HeadShot()
+    {
+        Instantiate(HeadShotImage, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+    }
+
+    private void Stern()
+    {
+        if (gameObject.tag == "BossEnemy")
+        {
+            if (gameObject.name == "Boss1(Clone)")
+                Boss1.Stern();
+            else if (gameObject.name == "Boss2(Clone)")
+                Boss2.Stern();
+        }
+        else
+            NormalEnemy.Stern();
     }
 
     public void Hit(string weapon, float direction, int additionalDamage)
     {
-        int damage = 0;
-
-        if (weapon == "Pistol")
+        if(GameInstance.instance.bPlaying && !GameInstance.instance.bPause)
         {
-            damage = 1;
-            _knuckBack = 5;
-        }
-        else
-        {
-            damage = 3;
-            _knuckBack = 10;
-        }
+            int damage = 0;
 
-        Hp -= damage + additionalDamage;
+            switch (weapon)
+            {
+                case "Pistol":
+                    damage = 1;
+                    _knuckBack = 5;
+                    break;
+                case "Rifle":
+                    damage = 3;
+                    _knuckBack = 10;
+                    break;
+                case "FlashBomb":
+                    damage = UpgradeManager.upgradeManager.UpgradeModule[1];
+                    _knuckBack = UpgradeManager.upgradeManager.UpgradeModule[1] * 3;
+                    Stern();
+                    break;
+                case "Body":
+                    _knuckBack = UpgradeManager.upgradeManager.UpgradeModule[8] * 15;
+                    Stern();
+                    break;
+            }
 
-        if (direction - transform.position.x > 0)
-            _directoin = -1;
-        else
-            _directoin = 1;
+            Hp -= damage + additionalDamage;
 
-        _knuckBackTiem = 0.1f;
+            if (direction - transform.position.x > 0)
+                _directoin = -1;
+            else
+                _directoin = 1;
 
-        if (Hp > 0)
-            StartCoroutine(Blink());
-        else
-            _bdead = true;
+            _knuckBackTiem = 0.1f;
+
+            if (Hp > 0)
+                StartCoroutine(Blink());
+            else
+            {
+                if (additionalDamage >= 100)
+                    HeadShot();
+
+                _bdead = true;
+            }            
+        }      
     }
 
     private IEnumerator Blink()

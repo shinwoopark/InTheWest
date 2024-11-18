@@ -21,7 +21,7 @@ public class SoundManager : MonoBehaviour
     public int Channels;
     private int _channelIndex;
 
-    public enum Sfx { Pistol, Rifle, Reload, Roll, FireBlindlyPistol, GetItem, Hit, Swich, Swing, Throw, Swings, SpAtk1, SpAtk2, QuickReload, GameClear, GameOver }
+    public enum Sfx { Pistol, Rifle, Reload, Roll, FireBlindlyPistol, GetItem, Hit, Swich, Swing, Throw, Swings, SpAtk1, SpAtk2, QuickReload, GameClear, GameOver, OpenUpgrade, FlashBomb, Explosion, Defend }
 
     private void Awake()
     {

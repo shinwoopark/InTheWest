@@ -12,6 +12,8 @@ public class PlayerSystem : MonoBehaviour
     private float _knuckBack;
     private int _directoin;
 
+    private Color _NormalColor = new Color(1, 1, 1);
+
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -63,6 +65,12 @@ public class PlayerSystem : MonoBehaviour
         }
 
         GameInstance.instance.PlayerHp -= damage;
+
+        //±¤Àü»ç È¿°ú
+        if (UpgradeManager.upgradeManager.UpgradeModule[4] > 0
+            && GameInstance.instance.PlayerHp == 1)
+            _NormalColor = Color.red;
+
         _knuckBack = KnuckBack;
 
         StartCoroutine(Blink());
@@ -85,8 +93,8 @@ public class PlayerSystem : MonoBehaviour
 
     private IEnumerator Blink()
     {
-        _spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+        _spriteRenderer.color = _NormalColor + new Color(0, 0, 0, 0.5f);
         yield return new WaitForSeconds(0.3f);
-        _spriteRenderer.color = new Color(1, 1, 1, 1);
+        _spriteRenderer.color = _NormalColor;
     }
 }

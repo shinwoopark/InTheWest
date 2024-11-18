@@ -49,10 +49,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed987e34e81328c4a932655bce1498f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NormalEnemy: {fileID: 2047234953256810303}
+  Boss1: {fileID: 0}
+  Boss2: {fileID: 0}
+  HeadShotImage: {fileID: 7467999568078912161, guid: d3e7e8ed927629345b48467d01ce3124, type: 3}
   Hp: 5
-  MaxHp: 5
   DeadTime: 1
   bKunckBack: 1
+  EXP: 2
   Player_dir: 0
 --- !u!114 &2047234953256810303
 MonoBehaviour:
@@ -66,7 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a665b94b945e114ead0a307edd9cfa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 4
+  MoveSpeed: 3
   Damage: 1
   KnunkBack: 10
   RayLenth: 1

@@ -10,7 +10,7 @@ public class Boss1 : MonoBehaviour
         Idle,
         Move,
         Attack,
-        Dead
+        Stern
     }
 
     State CurrentState = State.Idle;
@@ -29,8 +29,9 @@ public class Boss1 : MonoBehaviour
 
     public float JumpPower;
     public float RollSpeed;
-    public int Damage;
-    public float KnunkBack;
+
+    private int _damage;
+    private float _knunkBack;
 
     private int _down = 0;
 
@@ -45,9 +46,11 @@ public class Boss1 : MonoBehaviour
     private float _atkCoolTime = 1f;
     private float _atkCurTime;
 
+    private float _sternTime;
+
     public LayerMask Player;
     public Transform AtkBosPos;
-    public Vector2 AckBoxSize;
+    private Vector2 _ackBoxSize;
 
     private void Awake()
     {
@@ -62,22 +65,30 @@ public class Boss1 : MonoBehaviour
 
     private void Update()
     {
-        if (!GameInstance.instance.bPlaying) return;
-        if (_enemySystem.Hp <= 0) return;
+        if (GameInstance.instance.bPlaying
+            && !GameInstance.instance.bPause
+            && _enemySystem.Hp > 0)
+        {
+            UpdatePlayerPos();
+            UpdateDistance();
+            UpdateStern();
 
-        UpdateDir();
-        UpdatePlayerPos();
-        UpdateChoosePattern();
-        UpdateDistance();
-        UpdateAtkBox();
+            if (CurrentState != State.Stern)
+            {
+                UpdateDir();
+                UpdateChoosePattern();
+                UpdateAtkBox();
+            }
+        }        
     }
 
     private void FixedUpdate()
     {
-        if (!GameInstance.instance.bPlaying) return;
-        if (_enemySystem.Hp <= 0) return;
-
-        UpdateMove();
+        if (GameInstance.instance.bPlaying
+            && !GameInstance.instance.bPause
+            && _enemySystem.Hp > 0
+            && CurrentState != State.Stern)
+            UpdateMove();
     }
 
     private void UpdatePlayerPos()
@@ -113,6 +124,11 @@ public class Boss1 : MonoBehaviour
         {
             transform.position += new Vector3(_enemySystem.Player_dir * RollSpeed, 0, 0) * Time.deltaTime;
         }
+
+        if (_bJump || _bRoll)
+            gameObject.layer = 10;
+        else
+            gameObject.layer = 7;
     }
 
     private void UpdateDistance()
@@ -122,17 +138,48 @@ public class Boss1 : MonoBehaviour
 
     private void UpdateAtkBox()
     {
-        Collider2D attackBox = Physics2D.OverlapBox(AtkBosPos.position, AckBoxSize, 0, Player);
+        Collider2D attackBox = Physics2D.OverlapBox(AtkBosPos.position, _ackBoxSize, 0, Player);
 
         if (attackBox != null && _bAtk)
         {
-            _playerSystem.Hit(Damage, KnunkBack, transform.position.x);
+            _playerSystem.Hit(_damage, _knunkBack, transform.position.x);
             _bAtk = false;
         }
     }
+
+    private void UpdateStern()
+    {
+        if (CurrentState == State.Stern)
+        {
+            _sternTime -= Time.deltaTime;
+
+            if (_sternTime <= 0)
+            {
+                _spriteRenderer.color = new Color(1, 1, 1, 1);
+                _animator.SetBool("bStern", false);
+                CurrentState = State.Idle;
+            }
+        }
+    }
+
+    private void Blink()
+    {
+        if (CurrentState == State.Stern && _enemySystem.Hp > 0)
+        {
+            if (_spriteRenderer.color.a == 1)
+                _spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+            else
+                _spriteRenderer.color = new Color(1, 1, 1, 1);
+
+            Invoke("Blink", 0.25f);
+        }
+    }
+
     private void UpdateChoosePattern()
     {
-        _atkCurTime += Time.deltaTime;
+        if(CurrentState != State.Stern)
+            _atkCurTime += Time.deltaTime;
+
         if (_atkCurTime >= _atkCoolTime && CurrentState == State.Idle)
         {
             int atkPattern = 0;
@@ -206,29 +253,27 @@ public class Boss1 : MonoBehaviour
     private IEnumerator Atk1()
     {
         _animator.SetBool("bAtk1", true);
-        Damage = 1;
-        KnunkBack = 10;
+        _damage = 1;
+        _knunkBack = 10;
         AtkBosPos.transform.localPosition = new Vector3(_dir, 0, 0);
-        AckBoxSize = new Vector2(2, 1);
+        _ackBoxSize = new Vector2(2, 1);
         yield return new WaitForSeconds(0.5f);
         _bAtk = true;
         SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swing);
         yield return new WaitForSeconds(0.1f);
         _bAtk = false;
         yield return new WaitForSeconds(0.2f);
-        _animator.SetBool("bAtk1", false);       
-        CurrentState = State.Idle;
-        _atkCurTime = 0;
-        _atkCoolTime = Random.Range(0.75f, 1.5f);
+        _animator.SetBool("bAtk1", false);
+        EndPattern();
     }
 
     private IEnumerator Atk2()
     {
         _animator.SetBool("bAtk2", true);
-        Damage = 1;
-        KnunkBack = 10;
+        _damage = 1;
+        _knunkBack = 10;
         AtkBosPos.transform.localPosition = new Vector3(_dir, 0, 0);
-        AckBoxSize = new Vector2(2, 1);
+        _ackBoxSize = new Vector2(2, 1);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -242,18 +287,16 @@ public class Boss1 : MonoBehaviour
         }
 
         _animator.SetBool("bAtk2", false);
-        CurrentState = State.Idle;
-        _atkCurTime = 0;
-        _atkCoolTime = Random.Range(0.75f, 1.5f);
+        EndPattern();
     }
 
     private IEnumerator Atk3()
     {
         _animator.SetBool("bAtk3", true);
-        Damage = 1;
-        KnunkBack = 10;
+        _damage = 1;
+        _knunkBack = 10;
         AtkBosPos.transform.localPosition = new Vector3(_dir, 0, 0);
-        AckBoxSize = new Vector2(2, 1);
+        _ackBoxSize = new Vector2(2, 1);
         yield return new WaitForSeconds(0.5f);
 
         for (int i = 0; i < 2; i++)
@@ -265,17 +308,15 @@ public class Boss1 : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
-        Damage = 2;
-        KnunkBack = 15;
+        _damage = 2;
+        _knunkBack = 15;
         _bAtk = true;
         SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swings);
         yield return new WaitForSeconds(0.1f);
         _bAtk = false;
         yield return new WaitForSeconds(0.6f);
         _animator.SetBool("bAtk3", false);
-        CurrentState = State.Idle;
-        _atkCurTime = 0;
-        _atkCoolTime = Random.Range(0.75f, 1.5f);
+        EndPattern();
     }
 
     private IEnumerator TrapCast()
@@ -297,9 +338,7 @@ public class Boss1 : MonoBehaviour
 
         _animator.SetBool("bTrapCast", false);
         _bJump = false;
-        CurrentState = State.Idle;
-        _atkCurTime = 0;
-        _atkCoolTime = Random.Range(0.75f, 1.5f);
+        EndPattern();
     }
 
     private IEnumerator ProjectileCast()
@@ -319,9 +358,7 @@ public class Boss1 : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         _animator.SetBool("bProjectileCast", false);
-        CurrentState = State.Idle;
-        _atkCurTime = 0;
-        _atkCoolTime = Random.Range(0.75f, 1.5f);
+        EndPattern();
     }
 
     private IEnumerator Roll()
@@ -334,9 +371,7 @@ public class Boss1 : MonoBehaviour
 
         _animator.SetBool("bRoll", false);
         _bRoll = false;
-        CurrentState = State.Idle;
-        _atkCurTime = 0;
-        _atkCoolTime = Random.Range(0.75f, 1.5f);
+        EndPattern();
     }
 
     private IEnumerator SpAtk()
@@ -345,10 +380,10 @@ public class Boss1 : MonoBehaviour
 
         _animator.SetBool("bSpAtk", true);
         transform.position = _player_gb.transform.position + new Vector3(_dir * 1.5f, 0, 0);
-        Damage = 1;
-        KnunkBack = 5;
+        _damage = 1;
+        _knunkBack = 5;
         AtkBosPos.transform.localPosition = Vector3.zero;
-        AckBoxSize = new Vector2(3, 1);
+        _ackBoxSize = new Vector2(3, 1);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -358,9 +393,9 @@ public class Boss1 : MonoBehaviour
 
             if (i == 1)
             {
-                Damage = 2;
-                KnunkBack = 20;
-                AckBoxSize = new Vector2(7, 1);
+                _damage = 2;
+                _knunkBack = 20;
+                _ackBoxSize = new Vector2(7, 1);
                 delay = 0.5f;
             }
 
@@ -379,9 +414,25 @@ public class Boss1 : MonoBehaviour
 
         _animator.SetBool("bSpAtk", false);
 
-        CurrentState = State.Idle;
+        EndPattern();
+    }
+
+    private void EndPattern()
+    {
+        if(CurrentState != State.Stern)
+            CurrentState = State.Idle;
+
         _atkCurTime = 0;
         _atkCoolTime = Random.Range(0.75f, 1.5f);
+    }
+
+    public void Stern()
+    {
+        _sternTime = 1;
+        CurrentState = State.Stern;
+        Blink();
+        _animator.SetBool("bStern", true);
+        _animator.SetBool("bAttack", false);
     }
 
     private void OnDrawGizmos()
@@ -389,6 +440,6 @@ public class Boss1 : MonoBehaviour
         Gizmos.color = Color.red;
 
         if (_enemySystem != null)
-            Gizmos.DrawWireCube(AtkBosPos.position, AckBoxSize);
+            Gizmos.DrawWireCube(AtkBosPos.position, _ackBoxSize);
     }
 }

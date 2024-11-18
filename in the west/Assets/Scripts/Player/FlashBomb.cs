@@ -37,6 +37,7 @@ public class FlashBomb : MonoBehaviour
 
     private void Update()
     {
+        UpdateBomb();
         UpdateMove();
     }
 
@@ -54,7 +55,7 @@ public class FlashBomb : MonoBehaviour
 
         transform.position += new Vector3(moveSpeed * Direction, 0, 0) * Time.deltaTime;
 
-        transform.eulerAngles += new Vector3(0, 0, RotationSpeed) * Time.deltaTime;
+        transform.eulerAngles += new Vector3(0, 0, -RotationSpeed) * Time.deltaTime;
     }
 
     private void DestroyAndExplosion()
@@ -75,7 +76,7 @@ public class FlashBomb : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Enemy")
+        if(collision.gameObject.layer == 7)
         {
             DestroyAndExplosion();
         }

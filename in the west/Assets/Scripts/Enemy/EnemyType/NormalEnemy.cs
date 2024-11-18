@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class NormalEnemy : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class NormalEnemy : MonoBehaviour
     {
         Move,
         Attack,
+        Stern
     }
 
     State CurrentState = State.Move;
@@ -28,9 +30,10 @@ public class NormalEnemy : MonoBehaviour
 
     private int _dir;
 
-    private bool _bAttack;
     private bool _bSwing;
+
     private float _attackTime;
+    private float _sternTime;
 
     private void Awake()
     {
@@ -44,21 +47,20 @@ public class NormalEnemy : MonoBehaviour
 
     private void Update()
     {
-        if (!GameInstance.instance.bPlaying) return;
-
-        if (_enemySystem.Hp > 0)
+        if (GameInstance.instance.bPlaying
+                && _enemySystem.Hp > 0)
         {
             UpdateRaycaset();
             UpdateAttack();
+            UpdateStern();
         }          
     }
 
     private void FixedUpdate()
     {
-        if (!GameInstance.instance.bPlaying) return;
-
-        if (_enemySystem.Hp > 0 && !_bAttack)
-            UpdateMove();
+        if (GameInstance.instance.bPlaying
+                && _enemySystem.Hp > 0)
+        UpdateMove();
     }
 
     private void UpdateMove()
@@ -82,30 +84,58 @@ public class NormalEnemy : MonoBehaviour
 
     private void UpdateAttack()
     {
-        if (!_bAttack)
-            return;
-
-        _attackTime += Time.deltaTime;
-
-        _animator.SetBool("bAttack", true);
-
-        if (_attackTime >= 0.4 && !_bSwing)
+        if(CurrentState == State.Attack)
         {
-            Collider2D attackBox = Physics2D.OverlapBox(transform.position + new Vector3(_dir / 1.5f, 0, 0), AttackBoxSize, 0, Player);
+            _attackTime += Time.deltaTime;
 
-            if (attackBox != null)
+            _animator.SetBool("bAttack", true);
+
+            if (_attackTime >= 0.4 && !_bSwing)
             {
-                _playerSystem.Hit(Damage, KnunkBack, transform.position.x);
-            }
+                Collider2D attackBox = Physics2D.OverlapBox(transform.position + new Vector3(_dir / 1.5f, 0, 0), AttackBoxSize, 0, Player);
 
-            SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swing);
-            _bSwing = true;
-        }
-        if (_attackTime >= 0.8)
+                if (attackBox != null)
+                {
+                    _playerSystem.Hit(Damage, KnunkBack, transform.position.x);
+                }
+
+                SoundManager.soundManager.PlaySfx(SoundManager.Sfx.Swing);
+                _bSwing = true;
+            }
+            if (_attackTime >= 0.8)
+            {
+                _animator.SetBool("bAttack", false);
+                CurrentState = State.Move;
+            }
+        }     
+    }
+
+    private void UpdateStern()
+    {
+        if (CurrentState == State.Stern)
         {
-            _animator.SetBool("bAttack", false);
-            _bAttack = false;
+            _sternTime -= Time.deltaTime;
+
+            if (_sternTime <= 0)
+            {
+                CurrentState = State.Move;
+                _spriteRenderer.color = new Color(1, 1, 1, 1);
+                _animator.SetBool("bStern", false);
+            }
         }
+    }
+
+    private void Blink()
+    {
+        if (CurrentState == State.Stern  && _enemySystem.Hp > 0)
+        {
+            if (_spriteRenderer.color.a == 1)
+                _spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+            else
+                _spriteRenderer.color = new Color(1, 1, 1, 1);
+
+            Invoke("Blink", 0.25f);
+        }           
     }
 
     private void UpdateRaycaset()
@@ -113,12 +143,21 @@ public class NormalEnemy : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.right * _dir, RayLenth, Player);
         Debug.DrawRay(transform.position, Vector3.right * _dir * RayLenth, Color.red);
 
-        if (!_bAttack && hit.collider != null)
+        if (CurrentState == State.Move && hit.collider != null)
         {
             _attackTime = 0;
             _bSwing = false;
-            _bAttack = true;
+            CurrentState = State.Attack;
         }
+    }
+
+    public void Stern()
+    {
+        _sternTime = 1;
+        CurrentState = State.Stern;
+        Blink();
+        _animator.SetBool("bStern", true);
+        _animator.SetBool("bAttack", false);
     }
 
     private void OnDrawGizmos()

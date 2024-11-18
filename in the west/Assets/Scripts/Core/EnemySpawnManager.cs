@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class EnemySpawnManager : MonoBehaviour
@@ -6,79 +7,80 @@ public class EnemySpawnManager : MonoBehaviour
     public GameObject[] NormalEnemy;
     public GameObject[] BossEnemy;
 
-    private int _wave = 1;
-    private float _time = 5;
-    private int _enemyScore;
-    private bool _bEnemySpawn = false;
-    private bool _bBossSpawn = false;
+    private int _stage = 1;
+    private int _wave = 0;
+    private float _time = 0;
+    private int _enemyScore = 1;
+    private int _stageCount;
 
     private void Update()
     {
-        if (!_bEnemySpawn)
+        if (!GameInstance.instance.bBossSpawn)
             _time += Time.deltaTime;
 
-        UpdateWave();
+       UpdateWave();
     }
 
     private void UpdateWave()
     {
-        if (_bBossSpawn)
-            return;
-
-        if (_wave >= 5)
+        if (_time >= Random.Range(4, 7))
         {
-            GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
-
-            if (enemys.Length == 0)
+            if (_wave == 3)
             {
-                if (GameInstance.instance.Stage < 3)
+                if (_stage == 2 || _stage == 4)
                 {
-                    GameInstance.instance.Stage++;
-                    UiManager.uiManager.UpgradeUi.gameObject.SetActive(true);
-                    UpgradeManager.upgradeManager.ChooseModule();
+                    GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
 
-                    Time.timeScale = 0;
-                    GameInstance.instance.bUpgrading = true;
-                    _wave = 1;
+                    if (enemys.Length == 0)
+                    {
+                        switch (_stage)
+                        {
+                            case 2:
+                                SpawnBossEnemy(0, -1);
+                                GameInstance.instance.bBossSpawn = true;
+                                break;
+                            case 4:
+                                SpawnBossEnemy(1, -1);
+                                GameInstance.instance.bBossSpawn = true;
+                                break;
+                        }
+                    }
                 }
                 else
-                {
-                    SpawnBossEnemy(0, -1);
-                    _bBossSpawn = true;
-                }
+                    _enemyScore++;
 
+                _stage++;
+                _wave = 0;
+            }
+            else
+                ChooseEnemy();
+
+            _time = 0;
+        }
+    }
+
+    private void ChooseEnemy()
+    {
+        int enemyScore = _enemyScore;
+        int enemy1Count = 0;
+        int enemy2Count = 0;
+
+        for (; 0 < enemyScore;)
+        {
+            if (enemyScore > 1 && Random.Range(0, 2) == 0)
+            {
+                enemy2Count++;
+                enemyScore = enemyScore - 2;
+            }
+            else
+            {
+                enemy1Count++;
+                enemyScore--;
             }
         }
 
-        if (_time < 7.5f)
-            return;      
-
-        if (_wave < 5)
-        {
-            int enemy1Count = 0;
-            int enemy2Count = 0;
-
-            _enemyScore = _wave;
-
-            for (; 0 < _enemyScore;)
-            {
-                if (_enemyScore > 1 && Random.Range(0, 2) == 0)
-                {
-                    enemy2Count++;
-                    _enemyScore = _enemyScore - 2;
-                }
-                else
-                {
-                    enemy1Count++;
-                    _enemyScore--;
-                }
-            }
-
-            StartCoroutine(SpawnEnemy(enemy1Count, enemy2Count));
-            _wave++;      
-        }
-        _bEnemySpawn = true;
-        _time = 0;
+        StartCoroutine(SpawnEnemy(enemy1Count, enemy2Count));
+        _wave++;
     }
 
     private IEnumerator SpawnEnemy(int enemy1Count, int enemy2Count)
@@ -119,8 +121,6 @@ public class EnemySpawnManager : MonoBehaviour
 
             yield return new WaitForSeconds(Random.Range(0.25f, 0.75f));
         }
-
-        _bEnemySpawn = false;
     }
 
     private void SpawnNormalEnemy(int enemy, int dir)

@@ -23,6 +23,13 @@ public class MainUi : MonoBehaviour
     public GameObject GameOver_gb;
     public Image BackGroundColor;
 
+    public Slider EXPBar;
+
+    public GameObject[] UpgradeModules;
+
+    public GameObject HittingBodyCoolTime_gb;
+    public Slider HittingBodyCoolTimer;
+
     private void Update()
     {
         UpdatePlayeTime();
@@ -30,8 +37,12 @@ public class MainUi : MonoBehaviour
         UpdateGameOver();
         UpdateBulletCount();
         UpdateItemCount();
-        UpdateItem4();
+        UpdateHatItem();
         UpdatePuase();
+        UpdateUpgradeModules();
+        UpdateLastShot();
+        UpdateHittingBodyTimer();
+        UpdateEXP();
     }
 
     void OnEnable()
@@ -93,7 +104,7 @@ public class MainUi : MonoBehaviour
         Item3.text = GameInstance.instance.ItemInventroy[3].ToString();
     }
 
-    private void UpdateItem4()
+    private void UpdateHatItem()
     {
         if (GameInstance.instance.bHatItem)
         {
@@ -115,6 +126,56 @@ public class MainUi : MonoBehaviour
     private void UpdatePuase()
     {
         Pause.SetActive(GameInstance.instance.bPause);
+    }
+
+    private void UpdateUpgradeModules()
+    {
+        for (int i = 0; i < UpgradeModules.Length; ++i)
+        {
+            if (UpgradeManager.upgradeManager.UpgradeModule[i] > 0)
+                UpgradeModules[i].SetActive(true);
+            else
+                UpgradeModules[i].SetActive(false);
+        }
+    }
+
+    private void UpdateLastShot()
+    {
+        if (UpgradeManager.upgradeManager.UpgradeModule[0] > 0)
+        {
+            if (GameInstance.instance.PistolBullets == 1)
+                PistolBullets.color = new Color32(175, 0, 0, 255);
+            else
+                PistolBullets.color = Color.black;
+
+            if (GameInstance.instance.RifleBullets == 1)
+                RifleBullets.color = new Color32(175, 0, 0, 255);
+            else
+                RifleBullets.color = Color.black;
+        }
+    }
+
+    private void UpdateHittingBodyTimer()
+    {
+        if (UpgradeManager.upgradeManager.UpgradeModule[8] > 0)
+        {
+            HittingBodyCoolTime_gb.transform.position = GameManager.manager.Player.transform.position + new Vector3(0, 1, 0);
+
+            HittingBodyCoolTimer.value = GameInstance.instance.HittingCoolBodyTime;
+
+            if (HittingBodyCoolTimer.value == HittingBodyCoolTimer.maxValue)
+                HittingBodyCoolTime_gb.SetActive(false);
+            else
+                HittingBodyCoolTime_gb.SetActive(true);
+        }
+        else
+            HittingBodyCoolTime_gb.SetActive(false);
+    }
+
+    private void UpdateEXP()
+    {
+        EXPBar.maxValue = GameInstance.instance.MaxEXP;
+        EXPBar.value = GameInstance.instance.PlayerEXP;
     }
 
     public void ChangePlayerHp()
