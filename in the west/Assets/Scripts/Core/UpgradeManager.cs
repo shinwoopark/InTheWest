@@ -29,14 +29,6 @@ public class UpgradeManager : MonoBehaviour
             UpgradeModule.Add(0);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            ChooseModule();
-        }
-    }
-
     public void ChooseModule()
     {
         List<int> availableNumbers = new List<int>();
